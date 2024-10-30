@@ -1,0 +1,171 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+<style>
+    .hero {
+        text-align: center;
+        background-color: #27AE60; /* Primary */
+        color: white;
+        padding: 80px 20px;
+    }
+
+    .hero-content h1 {
+        font-size: 3em;
+        margin: 0;
+    }
+
+    .hero-content p {
+        font-size: 1.2em;
+        margin-top: 20px;
+    }
+
+    .hero-content .cta-button {
+        background-color: #FFCA28; /* Highlight */
+        color: #2C3E50;
+        padding: 15px 30px;
+        text-decoration: none;
+        border-radius: 30px;
+        font-weight: bold;
+        font-size: 1.1em;
+        margin-top: 40px;
+        display: inline-block;
+    }
+
+    .hero-content .cta-button:hover {
+        background-color: #F1B500; /* Slightly darker gold */
+    }
+</style>
+
+<section class="hero">
+    <div class="hero-content">
+        <h1>Manage Your Budget Easily with SmartSpender</h1>
+        <p>Your financial planning made simple and effective. Track your spending, save smartly, and achieve your goals.</p>
+        <a href="/auth/register" class="cta-button">Get Started Now</a>
+    </div>
+</section>
+
+<style>
+    .features {
+        background-color: #F9FAFB; /* Secondary */
+        padding: 60px 20px;
+    }
+
+    .features .feature {
+        max-width: 300px;
+    }
+
+    .feature .feature-icon {
+        font-size: 3em;
+        color: #27AE60; /* Primary */
+        margin-bottom: 20px;
+    }
+
+    .feature h3 {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+    }
+
+    .feature p {
+        font-size: 1.1em;
+        color: #2C3E50;
+    }
+</style>
+
+<section class="features d-flex justify-content-around">
+    <div class="feature text-center">
+        <div class="feature-icon">
+            <!-- Icon for feature 1 -->
+            <i class="fas fa-chart-line"></i>
+        </div>
+        <h3>Track Your Expenses</h3>
+        <p>Monitor every expense and stay on top of your financial habits with ease.</p>
+    </div>
+
+    <div class="feature text-center">
+        <div class="feature-icon">
+            <!-- Icon for feature 2 -->
+            <i class="fas fa-piggy-bank"></i>
+        </div>
+        <h3>Save Smartly</h3>
+        <p>Create custom savings goals and reach them faster with our smart tools.</p>
+    </div>
+
+    <div class="feature text-center">
+        <div class="feature-icon">
+            <!-- Icon for feature 3 -->
+            <i class="fas fa-user-friends"></i>
+        </div>
+        <h3>Collaborate with Family</h3>
+        <p>Share your budget plans and work together towards financial success.</p>
+    </div>
+</section>
+
+<style>
+    .testimonials {
+        background-color: #BDC3C7; /* Accent */
+        padding: 60px 20px;
+    }
+
+    .testimonials .testimonial {
+        max-width: 600px;
+        margin: 0 auto;
+        font-size: 1.2em;
+        font-style: italic;
+    }
+
+    .testimonials .testimonial:before {
+        content: "“";
+        font-size: 3em;
+        color: #27AE60; /* Primary */
+        vertical-align: top;
+        margin-right: 10px;
+    }
+
+    .testimonial .testimonial-author {
+        color: #2C3E50; /* Text Color */
+        margin-top: 20px;
+    }
+</style>
+
+<section class="testimonials text-center">
+    <div class="testimonial">
+        <p>"SmartSpender changed the way I handle my money. It's incredibly easy to use, and I saved more than ever before!"</p>
+        <span class="testimonial-author fw-bold">- John Doe, Freelance Designer</span>
+    </div>
+
+    <div class="testimonial">
+        <p>"My family and I are finally on the same page with our finances. SmartSpender made it simple and fun!"</p>
+        <span class="testimonial-author fw-bold">- Jane Smith, Mother of Two</span>
+    </div>
+</section>
+
+<style>
+    .cta-section {
+        background-color: #27AE60; /* Primary */
+        padding: 40px 20px;
+    }
+
+    .cta-section .cta-button {
+        background-color: #FFCA28; /* Highlight */
+        color: #2C3E50;
+        padding: 15px 30px;
+        border-radius: 30px;
+        font-size: 1.1em;
+    }
+
+    .cta-section .cta-button:hover {
+        background-color: #F1B500;
+    }
+</style>
+
+<section class="cta-section text-center text-white">
+    <h2>Take Control of Your Finances Today</h2>
+    <p class="mb-4">Join thousands of others who are managing their money better with SmartSpender.</p>
+    <a href="/auth/register" class="cta-button fw-bold">Sign Up Now</a>
+</section>
+
+@* <div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div> *@

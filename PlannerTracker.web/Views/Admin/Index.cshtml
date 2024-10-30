@@ -1,0 +1,70 @@
+﻿@*
+For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<!-- Admin Container -->
+<div class="container-fluid">
+    <!-- General Settings Section -->
+    <section class="admin-container d-flex justify-content-start flex-wrap gap-3">
+        <div class="category-header col-12">General Settings</div>
+
+        <!-- General Menu Items -->
+        <div class="menu bg-success bg-opacity-25 d-flex flex-column justify-content-center align-items-center p-4 m-2">
+            <i class="fa-solid fa-layer-group"></i>
+            <h3>Site Settings</h3>
+        </div>
+        <div class="menu bg-success bg-opacity-25 d-flex flex-column justify-content-center align-items-center p-4 m-2">
+            <i class="fa-solid fa-chart-line"></i>
+            <h3>Reports</h3>
+        </div>
+        <div class="menu bg-success bg-opacity-25 d-flex flex-column justify-content-center align-items-center p-4 m-2">
+            <i class="fa-solid fa-envelope"></i>
+            <h3>Messages</h3>
+        </div>
+    </section>
+
+    <!-- User Management Section -->
+    <section class="admin-container d-flex justify-content-start flex-wrap gap-3 mt-4">
+        <div class="category-header col-12">User Management</div>
+
+        <!-- User Management Menu Items -->
+        <div class="menu bg-info bg-opacity-25 d-flex flex-column justify-content-center align-items-center p-4 m-2">
+            <i class="fa-solid fa-users"></i>
+            <h3>Manage Users</h3>
+        </div>
+        <div class="menu bg-info bg-opacity-25 d-flex flex-column justify-content-center align-items-center p-4 m-2">
+            <i class="fa-solid fa-shield-alt"></i>
+            <h3>Manage Roles</h3>
+        </div>
+        <div class="menu bg-info bg-opacity-25 d-flex flex-column justify-content-center align-items-center p-4 m-2">
+            <i class="fa-solid fa-user-tag"></i>
+            <h3>Manage User Roles</h3>
+        </div>
+    </section>
+
+    <!-- Master Categories Section -->
+    <section class="admin-container d-flex justify-content-start flex-wrap gap-3 mt-4">
+        <div class="category-header col-12">Manage Categories</div>
+
+        <!-- Master Category Menu Items -->
+        <div
+            class="menu category bg-warning bg-opacity-25 d-flex flex-column justify-content-center align-items-center p-4 m-2">
+            <i class="fa-solid fa-list-alt"></i>
+            <h3>Manage Category</h3>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <script>
+        $(".menu.category").click((e) => {
+            e.preventDefault()
+            console.log("menu category clicked");
+            location.href = "/admin/category"
+        })
+    </script>
+}

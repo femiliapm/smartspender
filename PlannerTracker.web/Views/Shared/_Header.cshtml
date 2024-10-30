@@ -1,0 +1,206 @@
+﻿@*
+For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@using Newtonsoft.Json;
+
+@{
+    Layout = null;
+    string? dataStr = Context.Session.GetString("auth");
+    VMAuth? data = dataStr != null ? JsonConvert.DeserializeObject<VMAuth>(dataStr) : new();
+    Console.WriteLine("dataStr:" + dataStr);
+    Console.WriteLine("data?.Token:" + data?.Token);
+}
+
+<header class="mb-3 d-flex justify-content-between align-items-center py-4"
+    style="padding-left:7% !important; padding-right:7% !important;">
+    @* <a href="#" class="burger-btn d-block d-xl-none">
+    <i class="fa-solid fa-bars fs-3"></i>
+    </a> *@
+
+    <a class="logo" href="/">SmartSpender</a>
+
+    <style>
+        .logo:hover {
+            color: #27AE60;
+        }
+
+        nav.header-nav a {
+            color: #2C3E50;
+            /* Text Color (Dark Slate) */
+            text-decoration: none;
+            font-size: 1.1em;
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        nav.header-nav a:hover,
+        .btn-login:hover {
+            background-color: #27AE60;
+            /* Primary Green */
+            color: white;
+        }
+    </style>
+
+    <style>
+        .btn-login {
+            color: #2C3E50;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 30px;
+            transition: background-color 0.3s ease;
+            border: 3px solid #27AE60;
+        }
+
+        .btn-cta {
+            background-color: #FFCA28;
+            /* Highlight color (Yellow Gold) */
+            color: #2C3E50;
+            /* Dark Slate for contrast */
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-cta:hover {
+            background-color: #F1B500;
+            /* Slightly darker gold for hover effect */
+            color: white;
+        }
+    </style>
+
+    @if (data != null && data.Token != null)
+    {
+        <style>
+            header {
+                background-color: #2C3E50;
+            }
+
+            nav.header-nav a {
+                color: white;
+                font-size: 1em;
+                /* Adjust font size for better fit */
+            }
+
+            nav.header-nav a:hover {
+                color: #27AE60;
+                background-color: transparent;
+            }
+
+            .user-menu {
+                position: relative;
+            }
+
+            .dropdown {
+                position: relative;
+                margin-left: 5px;
+            }
+
+            .dropdown-button {
+                background: none;
+                border: none;
+                cursor: pointer;
+                font-size: 1em;
+            }
+
+            .dropdown-content {
+                position: absolute;
+                right: 0;
+                box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
+                border-radius: 5px;
+                padding: 10px;
+                z-index: 10;
+                width: 150px;
+            }
+
+            .dropdown-content a {
+                text-decoration: none;
+                color: #2C3E50;
+                display: block;
+                padding: 10px 15px;
+                font-size: 1em;
+            }
+
+            .dropdown-content a:hover {
+                background-color: #F0F0F0;
+            }
+
+            /* Show Dropdown on Hover */
+            .dropdown:hover .dropdown-content {
+                display: block !important;
+            }
+
+            /* Admin-Specific Menu Styles */
+            .admin-menu a {
+                color: #FFD700;
+                /* Gold color for admin-specific links */
+                margin-left: 15px;
+                font-weight: 600;
+                /* Slightly bolder for admin links */
+                font-size: 0.9em;
+                /* Smaller font size for admin links */
+            }
+
+            .admin-menu a:hover {
+                color: #FF4500;
+                /* Dark orange on hover */
+            }
+        </style>
+
+        <nav class="d-flex justify-content-center header-nav" style="width: 50%; gap: 20px;">
+            <a href="#dashboard">Dashboard</a>
+            <a href="#transactions">Transactions</a>
+            <a href="#reports">Reports</a>
+        </nav>
+
+        @if (data.Role == "Admin")
+        {
+            <nav class="admin-menu me-5">
+                <a href="/admin">Admin Dahsboard</a>
+                @* <a href="#manage-users">Manage Users</a>
+        <a href="#site-settings">Site Settings</a>
+        <a href="#view-logs">View Logs</a> *@
+            </nav>
+        }
+
+        <div class="user-menu d-flex align-items-center text-white">
+            <span class="user-name">Hello, @data.FullName</span>
+            <div class="dropdown">
+                <button class="dropdown-button text-white">▼</button>
+                <div class="dropdown-content d-none bg-white">
+                    <a href="#profile">Profile</a>
+                    <a href="/auth/logout">Logout</a>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <nav class="d-flex justify-content-center header-nav" style="width: 50%; gap: 20px;">
+            <a href="#feature">Feature</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#blog">Blog</a>
+        </nav>
+
+        <div class="header-cta">
+            <button class="btn btn-login me-2">Login</button>
+            <button class="btn btn-cta">Try it free!</button>
+        </div>
+    }
+</header>
+
+<script>
+    $(".btn-login").click((e) => {
+        e.preventDefault()
+        location.href = "/auth"
+    })
+
+    $(".btn-cta").click((e) => {
+        e.preventDefault()
+        location.href = "/auth/register"
+    })
+</script>
