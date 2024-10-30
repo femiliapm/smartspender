@@ -2,7 +2,7 @@
 For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 
-@model List<VMCategory>?
+@model Pagination<VMCategory>?
 
 @{
     Layout = "_AdminLayout";
@@ -27,9 +27,9 @@ For more information on enabling MVC for empty projects, visit https://go.micros
                 background-color: #007bff;
             }
 
-            .btn-search:hover {
-                background-color: #0056b3;
-            }
+                .btn-search:hover {
+                    background-color: #0056b3;
+                }
 
             .btn-add {
                 background-color: #28a745;
@@ -42,36 +42,43 @@ For more information on enabling MVC for empty projects, visit https://go.micros
                 box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             }
 
-            .btn-add:hover {
-                background-color: #218838;
-                /* Warna hijau yang sedikit lebih gelap */
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            }
+                .btn-add:hover {
+                    background-color: #218838;
+                    /* Warna hijau yang sedikit lebih gelap */
+                    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+                }
 
-            .btn-add:active {
-                background-color: #1e7e34;
-                /* Warna lebih gelap saat tombol ditekan */
-                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-                transform: scale(0.98);
-                /* Sedikit mengecilkan tombol saat ditekan */
-            }
+                .btn-add:active {
+                    background-color: #1e7e34;
+                    /* Warna lebih gelap saat tombol ditekan */
+                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+                    transform: scale(0.98);
+                    /* Sedikit mengecilkan tombol saat ditekan */
+                }
         </style>
 
         <button class="btn btn-success btn-add" id="btnAddCategory" data-bs-toggle="modal"
-            data-bs-target="#staticModal">
+                data-bs-target="#staticModal">
             <i class="fas fa-plus"></i>
         </button>
 
         <form class="search-group" asp-action="category" asp-controller="admin">
             <div class="input-group">
                 <input type="text" name="filter" id="filter" class="form-control" placeholder="Search category..."
-                    value="@ViewBag.Filter">
+                       value="@ViewBag.Filter">
                 <button class="btn btn-primary input-group-text btn-search">
                     <i class="fa fa-search"></i>
                 </button>
             </div>
         </form>
     </div>
+
+    <style>
+        td {
+            vertical-align: middle;
+        }
+    </style>
+
     <table class="table table-striped">
         <thead>
             <tr>
@@ -83,14 +90,9 @@ For more information on enabling MVC for empty projects, visit https://go.micros
             </tr>
         </thead>
         <tbody>
-            <style>
-                td {
-                    vertical-align: middle;
-                }
-            </style>
             @if (Model != null && Model.Count > 0)
             {
-                int no = 1;
+                int no = ViewBag.FirstIdx;
                 @foreach (var category in Model)
                 {
                     <tr class="align-items-center">
@@ -104,11 +106,11 @@ For more information on enabling MVC for empty projects, visit https://go.micros
                         <td>@category.Description</td>
                         <td>
                             <button class="btn btn-warning" data-id="@category.Id" data-bs-toggle="modal"
-                                data-bs-target="#staticModal">
+                                    data-bs-target="#staticModal">
                                 <i class="fas fa-edit"></i>
                             </button>
                             <button class="btn btn-danger" data-id="@category.Id" data-bs-toggle="modal"
-                                data-bs-target="#staticModal">
+                                    data-bs-target="#staticModal">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                         </td>
@@ -124,10 +126,26 @@ For more information on enabling MVC for empty projects, visit https://go.micros
             }
         </tbody>
     </table>
+    <div class="d-flex justify-content-end gap-1 mt-3">
+        @if (Model != null)
+        {
+            <div class="my-auto me-3">Menampilkan @ViewBag.FirstIdx-@ViewBag.LastIdx dari @Model.TotalData</div>
+            <button class="btn @(Model.HasPreviousPage ? "btn-outline-primary" : "btn-secondary disabled")" id="btnPrev">
+                <i class="fas fa-angle-left"></i>
+            </button>
+            <button class="btn @(Model.HasNextPage ? "btn-outline-primary" : "btn-secondary disabled")" id="btnNext">
+                <i class="fas fa-angle-right"></i>
+            </button>
+        }
+    </div>
 </div>
 
 @section Scripts {
     <script>
+        function RefreshPage(filter, currentPageSize, pageNumber) {
+            location.href = `/admin/category?filter=${filter}&currentPageSize=${currentPageSize}&pageNumber=${pageNumber}`
+        }
+
         $(document).ready(() => {
             if ("@ViewBag.Error" != "" && "@ViewBag.ErrorDesc" != "") toastr.error(`@Html.Raw(ViewBag.ErrorDesc)`, `@Html.Raw(ViewBag.Error)`)
             if ("@ViewBag.Error" != "" && "@ViewBag.ErrorDesc" == "") toastr.error(`@Html.Raw(ViewBag.Error)`)
@@ -155,6 +173,18 @@ For more information on enabling MVC for empty projects, visit https://go.micros
                 console.log("btnDanger clicked", id);
                 $("#staticModalBody").html(spinner)
                 $("#staticModalBody").load("/Category/Delete/" + id)
+            })
+
+            $("#btnPrev").click((e) => {
+                e.preventDefault()
+
+                RefreshPage('@ViewBag.Filter', '@ViewBag.PageSize', '@(!Model!.HasPreviousPage ? Model.PageIndex : Model.PageIndex - 1)')
+            })
+
+            $("#btnNext").click((e) => {
+                e.preventDefault()
+
+                RefreshPage('@ViewBag.Filter', '@ViewBag.PageSize', '@(!Model!.HasNextPage ? Model.PageIndex : Model.PageIndex + 1)')
             })
         })
     </script>
