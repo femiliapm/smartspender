@@ -6,22 +6,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PlannerTracker.DataModel
 {
-    [Table("tags")]
-    public partial class Tag
+    [Table("income_tags")]
+    public partial class IncomeTag
     {
-        public Tag()
-        {
-            ExpenseTags = new HashSet<ExpenseTag>();
-            IncomeTags = new HashSet<IncomeTag>();
-        }
-
         [Key]
-        [Column("id")]
-        public Guid Id { get; set; }
-        [Column("tag_name")]
-        [StringLength(50)]
-        [Unicode(false)]
-        public string TagName { get; set; } = null!;
+        [Column("income_id")]
+        public Guid IncomeId { get; set; }
+        [Key]
+        [Column("tag_id")]
+        public Guid TagId { get; set; }
         [Column("created_by")]
         public Guid? CreatedBy { get; set; }
         [Column("created_on", TypeName = "datetime")]
@@ -38,11 +31,13 @@ namespace PlannerTracker.DataModel
         public bool? IsDelete { get; set; }
 
         [ForeignKey("CreatedBy")]
-        [InverseProperty("Tags")]
+        [InverseProperty("IncomeTags")]
         public virtual User? CreatedByNavigation { get; set; }
-        [InverseProperty("Tag")]
-        public virtual ICollection<ExpenseTag> ExpenseTags { get; set; }
-        [InverseProperty("Tag")]
-        public virtual ICollection<IncomeTag> IncomeTags { get; set; }
+        [ForeignKey("IncomeId")]
+        [InverseProperty("IncomeTags")]
+        public virtual Income Income { get; set; } = null!;
+        [ForeignKey("TagId")]
+        [InverseProperty("IncomeTags")]
+        public virtual Tag Tag { get; set; } = null!;
     }
 }

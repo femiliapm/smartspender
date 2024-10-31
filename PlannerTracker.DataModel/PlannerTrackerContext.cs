@@ -21,6 +21,7 @@ namespace PlannerTracker.DataModel
         public virtual DbSet<Expense> Expenses { get; set; } = null!;
         public virtual DbSet<ExpenseTag> ExpenseTags { get; set; } = null!;
         public virtual DbSet<Income> Incomes { get; set; } = null!;
+        public virtual DbSet<IncomeTag> IncomeTags { get; set; } = null!;
         public virtual DbSet<Reminder> Reminders { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
         public virtual DbSet<Tag> Tags { get; set; } = null!;
@@ -149,6 +150,33 @@ namespace PlannerTracker.DataModel
                     .WithMany(p => p.Incomes)
                     .HasForeignKey(d => d.CreatedBy)
                     .HasConstraintName("fk_incomes_created_by");
+            });
+
+            modelBuilder.Entity<IncomeTag>(entity =>
+            {
+                entity.HasKey(e => new { e.IncomeId, e.TagId })
+                    .HasName("PK__income_t__F9EE1D8DCE4696FF");
+
+                entity.Property(e => e.CreatedOn).HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.IsDelete).HasDefaultValueSql("((0))");
+
+                entity.HasOne(d => d.CreatedByNavigation)
+                    .WithMany(p => p.IncomeTags)
+                    .HasForeignKey(d => d.CreatedBy)
+                    .HasConstraintName("fk_income_tags_created_by");
+
+                entity.HasOne(d => d.Income)
+                    .WithMany(p => p.IncomeTags)
+                    .HasForeignKey(d => d.IncomeId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_income_tags_income");
+
+                entity.HasOne(d => d.Tag)
+                    .WithMany(p => p.IncomeTags)
+                    .HasForeignKey(d => d.TagId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_income_tags_tag");
             });
 
             modelBuilder.Entity<Reminder>(entity =>

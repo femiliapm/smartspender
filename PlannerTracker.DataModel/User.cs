@@ -16,6 +16,7 @@ namespace PlannerTracker.DataModel
             Categories = new HashSet<Category>();
             ExpenseTags = new HashSet<ExpenseTag>();
             Expenses = new HashSet<Expense>();
+            IncomeTags = new HashSet<IncomeTag>();
             Incomes = new HashSet<Income>();
             ReminderCreatedByNavigations = new HashSet<Reminder>();
             ReminderUsers = new HashSet<Reminder>();
@@ -69,6 +70,8 @@ namespace PlannerTracker.DataModel
         public virtual ICollection<ExpenseTag> ExpenseTags { get; set; }
         [InverseProperty("CreatedByNavigation")]
         public virtual ICollection<Expense> Expenses { get; set; }
+        [InverseProperty("CreatedByNavigation")]
+        public virtual ICollection<IncomeTag> IncomeTags { get; set; }
         [InverseProperty("CreatedByNavigation")]
         public virtual ICollection<Income> Incomes { get; set; }
         [InverseProperty("CreatedByNavigation")]

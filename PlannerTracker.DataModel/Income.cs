@@ -9,6 +9,11 @@ namespace PlannerTracker.DataModel
     [Table("incomes")]
     public partial class Income
     {
+        public Income()
+        {
+            IncomeTags = new HashSet<IncomeTag>();
+        }
+
         [Key]
         [Column("id")]
         public Guid Id { get; set; }
@@ -48,5 +53,7 @@ namespace PlannerTracker.DataModel
         [ForeignKey("CreatedBy")]
         [InverseProperty("Incomes")]
         public virtual User? CreatedByNavigation { get; set; }
+        [InverseProperty("Income")]
+        public virtual ICollection<IncomeTag> IncomeTags { get; set; }
     }
 }
