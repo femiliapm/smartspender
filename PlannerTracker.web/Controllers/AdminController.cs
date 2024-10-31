@@ -20,7 +20,7 @@ namespace PlannerTracker.web.Controllers
         public IActionResult Index()
         {
             string? authStr = HttpContext.Session.GetString("auth");
-            VMAuth? auth = authStr != null ? JsonConvert.DeserializeObject<VMAuth?>(authStr) : new();
+            VMAuth? auth = authStr != null ? JsonConvert.DeserializeObject<VMAuth?>(authStr) : null;
             if ((auth != null && auth?.Role?.ToUpper() != "ADMIN") || auth == null)
             {
                 return RedirectToAction("Index", "Home");
@@ -32,7 +32,7 @@ namespace PlannerTracker.web.Controllers
         public async Task<IActionResult> Category(string? filter, int? currentPageSize, int pageNumber = 1)
         {
             string? authStr = HttpContext.Session.GetString("auth");
-            VMAuth? auth = authStr != null ? JsonConvert.DeserializeObject<VMAuth?>(authStr) : new();
+            VMAuth? auth = authStr != null ? JsonConvert.DeserializeObject<VMAuth?>(authStr) : null;
             if ((auth != null && auth?.Role?.ToUpper() != "ADMIN") || auth == null)
             {
                 return RedirectToAction("Index", "Home");

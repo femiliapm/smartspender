@@ -17,7 +17,7 @@ namespace PlannerTracker.web.Controllers
         public IActionResult Create()
         {
             string? authStr = HttpContext.Session.GetString("auth");
-            VMAuth? auth = authStr != null ? JsonConvert.DeserializeObject<VMAuth?>(authStr) : new();
+            VMAuth? auth = authStr != null ? JsonConvert.DeserializeObject<VMAuth?>(authStr) : null;
 
             if ((auth != null && auth?.Role?.ToUpper() != "ADMIN") || auth == null)
             {
@@ -32,7 +32,7 @@ namespace PlannerTracker.web.Controllers
         public async Task<VMResponse<VMCategory>?> AddCategory(VMCategoryReq req)
         {
             string? authStr = HttpContext.Session.GetString("auth");
-            VMAuth? auth = authStr != null ? JsonConvert.DeserializeObject<VMAuth?>(authStr) : new();
+            VMAuth? auth = authStr != null ? JsonConvert.DeserializeObject<VMAuth?>(authStr) : null;
             if ((auth != null && auth?.Role?.ToUpper() != "ADMIN") || auth == null)
             {
                 throw new Exception("Error not permission!");
@@ -49,7 +49,7 @@ namespace PlannerTracker.web.Controllers
         public async Task<VMResponse<VMCategory>?> UpdateCategory(VMCategoryReq req, string id)
         {
             string? authStr = HttpContext.Session.GetString("auth");
-            VMAuth? auth = authStr != null ? JsonConvert.DeserializeObject<VMAuth?>(authStr) : new();
+            VMAuth? auth = authStr != null ? JsonConvert.DeserializeObject<VMAuth?>(authStr) : null;
             if ((auth != null && auth?.Role?.ToUpper() != "ADMIN") || auth == null)
             {
                 throw new Exception("Error not permission!");
@@ -66,7 +66,7 @@ namespace PlannerTracker.web.Controllers
         public async Task<VMResponse<VMCategory>?> DeleteCategory(string id)
         {
             string? authStr = HttpContext.Session.GetString("auth");
-            VMAuth? auth = authStr != null ? JsonConvert.DeserializeObject<VMAuth?>(authStr) : new();
+            VMAuth? auth = authStr != null ? JsonConvert.DeserializeObject<VMAuth?>(authStr) : null;
             if ((auth != null && auth?.Role?.ToUpper() != "ADMIN") || auth == null)
             {
                 throw new Exception("Error not permission!");
@@ -80,7 +80,7 @@ namespace PlannerTracker.web.Controllers
         public async Task<IActionResult> Edit(string id)
         {
             string? authStr = HttpContext.Session.GetString("auth");
-            VMAuth? auth = authStr != null ? JsonConvert.DeserializeObject<VMAuth?>(authStr) : new();
+            VMAuth? auth = authStr != null ? JsonConvert.DeserializeObject<VMAuth?>(authStr) : null;
 
             if ((auth != null && auth?.Role?.ToUpper() != "ADMIN") || auth == null)
             {
@@ -97,7 +97,7 @@ namespace PlannerTracker.web.Controllers
         public async Task<IActionResult> Delete(string id)
         {
             string? authStr = HttpContext.Session.GetString("auth");
-            VMAuth? auth = authStr != null ? JsonConvert.DeserializeObject<VMAuth?>(authStr) : new();
+            VMAuth? auth = authStr != null ? JsonConvert.DeserializeObject<VMAuth?>(authStr) : null;
 
             if ((auth != null && auth?.Role?.ToUpper() != "ADMIN") || auth == null)
             {
