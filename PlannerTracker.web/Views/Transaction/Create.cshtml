@@ -36,14 +36,20 @@
                 <label for="BudgetPlanId" class="form-label">Budget Plan<span class="text-danger">*</span></label>
                 <select class="form-select" id="BudgetPlanId" name="BudgetPlanId" style="font-size: 14px; color: #2c3e50;">
                     <option>-- Select Plan --</option>
-                    <option>Monthly Plan</option>
+                    @foreach(var budgetPlan in ViewBag.BudgetPlan)
+                    {
+                        <option value="@budgetPlan.Id">@budgetPlan.PlanName</option>
+                    }
                 </select>
             </div>
             <div class="mb-3">
                 <label for="CategoryId" class="form-label">Category<span class="text-danger">*</span></label>
                 <select class="form-select" id="CategoryId" name="CategoryId" style="font-size: 14px; color: #2c3e50;">
                     <option>-- Select Category --</option>
-                    <option>Groceries</option>
+                    @foreach(var category in ViewBag.Category)
+                    {
+                            <option value="@category.Id">@category.CategoryName</option>
+                    }
                 </select>
             </div>
 

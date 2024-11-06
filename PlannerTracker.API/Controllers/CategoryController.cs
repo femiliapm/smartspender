@@ -49,7 +49,6 @@ namespace PlannerTracker.API.Controllers
         {
             try
             {
-                Console.WriteLine("filter: " + filter);
                 VMResponse<List<VMCategory>> response = await Task.Run(() => category.GetCategories(filter ?? string.Empty));
                 return StatusCode((int)response.StatusCode, response);
             }
