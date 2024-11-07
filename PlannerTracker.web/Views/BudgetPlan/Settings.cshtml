@@ -125,7 +125,7 @@
             $(".btn-warning").click(function(e){
                 e.preventDefault()
                 $("#staticModalBody").html(spinner)
-                // $("#staticModalBody").load("/BudgetPlan/Edit")
+                $("#staticModalBody").load("/BudgetPlan/Edit/" + $(this).data("id"))
             })
 
             $(".btn-danger").click(function (e) {

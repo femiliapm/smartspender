@@ -44,6 +44,32 @@ namespace PlannerTracker.API.Controllers
             }
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult> FetchById(Guid id)
+        {
+            try
+            {
+                VMResponse<VMBudgetPlan> response = await Task.Run(() => budgetPlan.GetById(id));
+                return StatusCode((int)response.StatusCode, response);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error at BudgetPlanController.FetchById: " + ex.Message);
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine("InnerException: " + ex.InnerException.Message);
+                }
+
+                VMError err = new()
+                {
+                    error = ex.Message,
+                    error_description = ex.Source
+                };
+
+                return StatusCode(500, err);
+            }
+        }
+
         [HttpPost]
         public async Task<ActionResult> Create(VMBudgetPlanReq req)
         {
@@ -55,6 +81,32 @@ namespace PlannerTracker.API.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine("Error at BudgetPlanController.Create: " + ex.Message);
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine("InnerException: " + ex.InnerException.Message);
+                }
+
+                VMError err = new()
+                {
+                    error = ex.Message,
+                    error_description = ex.Source
+                };
+
+                return StatusCode(500, err);
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Update(VMBudgetPlanReq req, Guid id)
+        {
+            try
+            {
+                VMResponse<VMBudgetPlan> response = await Task.Run(() => budgetPlan.Update(req, id));
+                return StatusCode((int)response.StatusCode, response);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error at BudgetPlanController.Update: " + ex.Message);
                 if (ex.InnerException != null)
                 {
                     Console.WriteLine("InnerException: " + ex.InnerException.Message);

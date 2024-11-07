@@ -38,6 +38,29 @@ namespace PlannerTracker.DataAccess
             return response;
         }
 
+        public VMResponse<VMBudgetPlan> GetById(Guid id)
+        {
+            VMResponse<VMBudgetPlan> response = new();
+
+            try
+            {
+                response.Data = (
+                        from bp in db.BudgetPlans
+                        where bp.IsDelete == false && bp.Id == id
+                        select new VMBudgetPlan(bp)
+                    ).FirstOrDefault();
+
+                response.StatusCode = HttpStatusCode.OK;
+                response.Message = "Successfully fetched!";
+            }
+            catch (Exception ex)
+            {
+                response.Message = $"{response.StatusCode} - {ex.Message}";
+            }
+
+            return response;
+        }
+
         public VMResponse<VMBudgetPlan> Create(VMBudgetPlanReq req)
         {
             VMResponse<VMBudgetPlan> response = new();
@@ -65,6 +88,50 @@ namespace PlannerTracker.DataAccess
                     response.Data = new VMBudgetPlan(budgetPlan);
                     response.StatusCode = HttpStatusCode.Created;
                     response.Message = $"Plan {budgetPlan.PlanName} is successfully created!";
+                }
+                catch (Exception ex)
+                {
+                    dbTran.Rollback();
+                    response.Message = $"{response.StatusCode} - {ex.Message}";
+                }
+            }
+
+            return response;
+        }
+
+        public VMResponse<VMBudgetPlan> Update(VMBudgetPlanReq req, Guid id)
+        {
+            VMResponse<VMBudgetPlan> response = new();
+
+            using (IDbContextTransaction dbTran = db.Database.BeginTransaction())
+            {
+                try
+                {
+                    BudgetPlan? budgetPlan = db.BudgetPlans.Where(bp => bp.Id == id && bp.IsDelete == false).FirstOrDefault();
+
+                    if (budgetPlan == null)
+                    {
+                        response.StatusCode = HttpStatusCode.NotFound;
+                        response.Message = $"Plan id : {id} is not found!";
+                        return response;
+                    }
+
+                    budgetPlan.PlanName = req.PlanName;
+                    budgetPlan.StartDate = req.StartDate;
+                    budgetPlan.EndDate = req.EndDate;
+                    budgetPlan.TotalBudget = req.TotalBudget;
+                    budgetPlan.ModifiedBy = req.ModifiedBy;
+                    budgetPlan.ModifiedOn = DateTime.Now;
+
+                    db.Update(budgetPlan);
+                    db.SaveChanges();
+
+                    dbTran.Commit();
+
+                    // response
+                    response.Data = new VMBudgetPlan(budgetPlan);
+                    response.StatusCode = HttpStatusCode.OK;
+                    response.Message = $"Plan {budgetPlan.PlanName} is successfully updated!";
                 }
                 catch (Exception ex)
                 {
