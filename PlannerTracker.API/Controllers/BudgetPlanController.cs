@@ -121,5 +121,66 @@ namespace PlannerTracker.API.Controllers
                 return StatusCode(500, err);
             }
         }
+
+        [HttpDelete("[action]")]
+        public async Task<ActionResult> Delete(Guid id, Guid userId)
+        {
+            try
+            {
+                VMResponse<VMBudgetPlan> response = await Task.Run(() => budgetPlan.Delete(id, userId));
+                return StatusCode((int)response.StatusCode, response);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error at BudgetPlanController.Delete: " + ex.Message);
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine("InnerException: " + ex.InnerException.Message);
+                }
+
+                VMError err = new()
+                {
+                    error = ex.Message,
+                    error_description = ex.Source
+                };
+
+                return StatusCode(500, err);
+            }
+        }
+
+        [HttpDelete]
+        public async Task<ActionResult> DeleteMultiple(string id, Guid userId)
+        {
+            try
+            {
+                List<string> idListStr = id.Split(",").ToList();
+                List<Guid> ids = new();
+
+                foreach (var idstr in idListStr)
+                {
+                    Guid temp = Guid.Parse(idstr);
+                    ids.Add(temp);
+                }
+
+                VMResponse<VMBudgetPlan> response = await Task.Run(() => budgetPlan.DeleteMultiple(ids, userId));
+                return StatusCode((int)response.StatusCode, response);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error at BudgetPlanController.DeleteMultiple: " + ex.Message);
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine("InnerException: " + ex.InnerException.Message);
+                }
+
+                VMError err = new()
+                {
+                    error = ex.Message,
+                    error_description = ex.Source
+                };
+
+                return StatusCode(500, err);
+            }
+        }
     }
 }

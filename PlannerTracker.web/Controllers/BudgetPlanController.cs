@@ -39,9 +39,30 @@ namespace PlannerTracker.web.Controllers
             VMResponse<VMBudgetPlan>? response = await budgetPlan.FetchById(auth.Token ?? string.Empty, id);
             VMBudgetPlan? data = response?.Data ?? null;
 
-            Console.WriteLine("data.TotalBudget: " + data?.TotalBudget);
-
             ViewBag.Title = "Edit Budget Plan";
+            return View(data);
+        }
+
+        public async Task<IActionResult> Delete(string id)
+        {
+            string? authStr = HttpContext.Session.GetString("auth");
+            VMAuth? auth = authStr != null ? JsonConvert.DeserializeObject<VMAuth?>(authStr) : null;
+            if (auth == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            List<string> idstr = id.Split(",").ToList();
+            List<VMBudgetPlan> data = new();
+
+            foreach (var item in idstr)
+            {
+                VMResponse<VMBudgetPlan>? response = await budgetPlan.FetchById(auth.Token ?? string.Empty, item);
+                VMBudgetPlan temp = response?.Data!;
+                data.Add(temp);
+            }
+
+            ViewBag.Title = "Delete Budget Plan";
             return View(data);
         }
 
@@ -78,6 +99,19 @@ namespace PlannerTracker.web.Controllers
             req.TotalBudgetStr = string.Empty;
 
             return await budgetPlan.UpdateBudgetPlan(auth.Token ?? string.Empty, req, id);
+        }
+
+        [HttpPost]
+        public async Task<VMResponse<VMBudgetPlan>?> DeleteBudgetPlan(string id)
+        {
+            string? authStr = HttpContext.Session.GetString("auth");
+            VMAuth? auth = authStr != null ? JsonConvert.DeserializeObject<VMAuth?>(authStr) : null;
+            if (auth == null)
+            {
+                throw new Exception("Error not permission!");
+            }
+
+            return await budgetPlan.DeleteBudgetPlan(auth.Token ?? string.Empty, id, auth.Id.ToString() ?? string.Empty);
         }
 
         public async Task<IActionResult> Settings()

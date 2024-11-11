@@ -142,5 +142,90 @@ namespace PlannerTracker.DataAccess
 
             return response;
         }
+
+        public VMResponse<VMBudgetPlan> Delete(Guid id, Guid userId)
+        {
+            VMResponse<VMBudgetPlan> response = new();
+
+            using (IDbContextTransaction dbTran = db.Database.BeginTransaction())
+            {
+                try
+                {
+                    BudgetPlan? budgetPlan = db.BudgetPlans.Where(bp => bp.Id == id && bp.IsDelete == false).FirstOrDefault();
+
+                    if (budgetPlan == null)
+                    {
+                        response.StatusCode = HttpStatusCode.NotFound;
+                        response.Message = $"Plan id : {id} is not found!";
+                        return response;
+                    }
+
+                    budgetPlan.IsDelete = true;
+                    budgetPlan.DeletedBy = userId;
+                    budgetPlan.DeletedOn = DateTime.Now;
+
+                    db.Update(budgetPlan);
+                    db.SaveChanges();
+
+                    dbTran.Commit();
+
+                    // response
+                    response.Data = default;
+                    response.StatusCode = HttpStatusCode.OK;
+                    response.Message = $"Plan {budgetPlan.PlanName} is successfully deleted!";
+                }
+                catch (Exception ex)
+                {
+                    dbTran.Rollback();
+                    response.Message = $"{response.StatusCode} - {ex.Message}";
+                }
+            }
+
+            return response;
+        }
+
+        public VMResponse<VMBudgetPlan> DeleteMultiple(List<Guid> ids, Guid userId)
+        {
+            VMResponse<VMBudgetPlan> response = new();
+
+            using (IDbContextTransaction dbTran = db.Database.BeginTransaction())
+            {
+                try
+                {
+                    foreach (var id in ids)
+                    {
+                        BudgetPlan? budgetPlan = db.BudgetPlans.Where(bp => bp.Id == id && bp.IsDelete == false).FirstOrDefault();
+
+                        if (budgetPlan == null)
+                        {
+                            response.StatusCode = HttpStatusCode.NotFound;
+                            response.Message = $"Plan id : {id} is not found!";
+                            return response;
+                        }
+
+                        budgetPlan.IsDelete = true;
+                        budgetPlan.DeletedBy = userId;
+                        budgetPlan.DeletedOn = DateTime.Now;
+
+                        db.Update(budgetPlan);
+                        db.SaveChanges();
+                    }
+
+                    dbTran.Commit();
+
+                    // response
+                    response.Data = default;
+                    response.StatusCode = HttpStatusCode.OK;
+                    response.Message = $"Successfully deleted!";
+                }
+                catch (Exception ex)
+                {
+                    dbTran.Rollback();
+                    response.Message = $"{response.StatusCode} - {ex.Message}";
+                }
+            }
+
+            return response;
+        }
     }
 }
