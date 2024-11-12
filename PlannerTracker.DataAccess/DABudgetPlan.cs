@@ -14,7 +14,7 @@ namespace PlannerTracker.DataAccess
             this.db = _db;
         }
 
-        public VMResponse<List<VMBudgetPlan>> GetAll()
+        public VMResponse<List<VMBudgetPlan>> GetAll(string? filter)
         {
             VMResponse<List<VMBudgetPlan>> response = new();
 
@@ -22,7 +22,9 @@ namespace PlannerTracker.DataAccess
             {
                 response.Data = (
                         from bp in db.BudgetPlans
-                        where bp.IsDelete == false
+                        where bp.IsDelete == false && (
+                            !string.IsNullOrEmpty(filter) ? bp.PlanName.ToLower().Contains(filter.ToLower()) : true
+                        )
                         orderby bp.CreatedOn descending
                         select new VMBudgetPlan(bp)
                     ).ToList();

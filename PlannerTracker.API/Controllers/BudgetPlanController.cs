@@ -19,11 +19,11 @@ namespace PlannerTracker.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> Fetch()
+        public async Task<ActionResult> Fetch(string? filter)
         {
             try
             {
-                VMResponse<List<VMBudgetPlan>> response = await Task.Run(() => budgetPlan.GetAll());
+                VMResponse<List<VMBudgetPlan>> response = await Task.Run(() => budgetPlan.GetAll(filter));
                 return StatusCode((int)response.StatusCode, response);
             }
             catch (Exception ex)

@@ -26,7 +26,7 @@ namespace PlannerTracker.web.Controllers
             }
 
             VMResponse<List<VMCategory>>? resCategory = await category.Fetch(auth.Token ?? string.Empty, string.Empty);
-            VMResponse<List<VMBudgetPlan>>? resBudgetPlan = await budgetPlan.Fetch(auth.Token ?? string.Empty);
+            VMResponse<List<VMBudgetPlan>>? resBudgetPlan = await budgetPlan.Fetch(auth.Token ?? string.Empty, string.Empty);
 
             ViewBag.Title = "Add Transaction";
             ViewBag.Category = resCategory?.Data;

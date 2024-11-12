@@ -54,6 +54,7 @@
                 success: function (res) {
                     if (res.statusCode == 200) {
                         toastr.success(res.message)
+                        localStorage.clear()
                         setTimeout(function () {
                             location.reload();
                         }, 1500);

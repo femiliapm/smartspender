@@ -19,13 +19,13 @@ namespace PlannerTracker.web.Models
             apiUrl = _config["ApiUrl"];
         }
 
-        public async Task<VMResponse<List<VMBudgetPlan>>?> Fetch(string token)
+        public async Task<VMResponse<List<VMBudgetPlan>>?> Fetch(string token, string? filter)
         {
             VMResponse<List<VMBudgetPlan>>? response = new();
 
             try
             {
-                string url = apiUrl + "BudgetPlan";
+                string url = apiUrl + "BudgetPlan" + (!string.IsNullOrEmpty(filter) ? "?filter=" + filter : string.Empty);
                 Console.WriteLine(url);
 
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);

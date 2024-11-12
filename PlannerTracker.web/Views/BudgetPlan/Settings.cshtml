@@ -4,7 +4,7 @@
 
 @using System.Globalization
 
-@model List<VMBudgetPlan>
+@model Pagination<VMBudgetPlan>?
 
 @{
 }
@@ -15,9 +15,9 @@
             background-color: #007bff;
         }
 
-        .btn-search:hover {
-            background-color: #0056b3;
-        }
+            .btn-search:hover {
+                background-color: #0056b3;
+            }
 
         .btn-add {
             background-color: #28a745;
@@ -30,19 +30,19 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
 
-        .btn-add:hover {
-            background-color: #218838;
-            /* Warna hijau yang sedikit lebih gelap */
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-        }
+            .btn-add:hover {
+                background-color: #218838;
+                /* Warna hijau yang sedikit lebih gelap */
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            }
 
-        .btn-add:active {
-            background-color: #1e7e34;
-            /* Warna lebih gelap saat tombol ditekan */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            transform: scale(0.98);
-            /* Sedikit mengecilkan tombol saat ditekan */
-        }
+            .btn-add:active {
+                background-color: #1e7e34;
+                /* Warna lebih gelap saat tombol ditekan */
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+                transform: scale(0.98);
+                /* Sedikit mengecilkan tombol saat ditekan */
+            }
     </style>
 
     <button class="btn btn-success btn-add" id="btnAddBudget" data-bs-toggle="modal"
@@ -72,7 +72,7 @@
         <tr>
             <th class="col-1">
                 <button class="btn btn-outline-secondary btn-sm btn-dels" data-bs-toggle="modal"
-                        data-bs-target="#staticModal">
+                        data-bs-target="#staticModal" disabled>
                     <i class="fa-solid fa-trash me-2"></i>Delete
                 </button>
             </th>
@@ -87,87 +87,136 @@
     <tbody>
         @if (Model != null && Model.Count > 0)
         {
-            int no = 1;
+            int no = ViewBag.FirstIdx;
             @foreach (var bp in Model)
             {
-                        <tr>
-                            <td class="text-center">
-                                <input class="check" data-id="@bp.Id" type="checkbox" style="width: 1.2rem; height: 1.2rem;">
-                            </td>
-                            <td>@no.</td>
-                            <td>@bp.PlanName</td>
-                            <td>@bp.TotalBudget.ToString("C", new CultureInfo("id-ID"))</td>
-                            <td>@bp.StartDate?.ToString("D")</td>
-                            <td>@bp.EndDate?.ToString("D")</td>
-                            <td>
-                                <button class="btn btn-warning" data-id="@bp.Id" data-bs-toggle="modal"
-                                        data-bs-target="#staticModal">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="btn btn-danger" data-id="@bp.Id" data-bs-toggle="modal"
-                                        data-bs-target="#staticModal">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </td>
-                        </tr>
+                <tr>
+                    <td class="text-center">
+                        <input class="check" data-id="@bp.Id" type="checkbox" style="width: 1.2rem; height: 1.2rem;">
+                    </td>
+                    <td>@no.</td>
+                    <td>@bp.PlanName</td>
+                    <td>@bp.TotalBudget.ToString("C", new CultureInfo("id-ID"))</td>
+                    <td>@bp.StartDate?.ToString("D")</td>
+                    <td>@bp.EndDate?.ToString("D")</td>
+                    <td>
+                        <button class="btn btn-warning" data-id="@bp.Id" data-bs-toggle="modal"
+                                data-bs-target="#staticModal">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-danger" data-id="@bp.Id" data-bs-toggle="modal"
+                                data-bs-target="#staticModal">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                </tr>
                 no += 1;
             }
         }
         else
         {
-                <tr>
-                    <td class="text-center" colspan=7>-- No Budget Plan Data --</td>
-                </tr>
+            <tr>
+                <td class="text-center" colspan=7>-- No Budget Plan Data --</td>
+            </tr>
         }
     </tbody>
 </table>
 
+<div class="d-flex justify-content-end gap-1 mt-3">
+    @if (Model != null)
+    {
+        <div class="my-auto me-3">Menampilkan @ViewBag.FirstIdx-@ViewBag.LastIdx dari @Model.TotalData</div>
+        <button class="btn @(Model.HasPreviousPage ? "btn-outline-primary" : "btn-secondary disabled")" id="btnPrev">
+            <i class="fas fa-angle-left"></i>
+        </button>
+        <button class="btn @(Model.HasNextPage ? "btn-outline-primary" : "btn-secondary disabled")" id="btnNext">
+            <i class="fas fa-angle-right"></i>
+        </button>
+    }
+</div>
+
 @section Scripts {
-        <script>
-            let plans = []
+    <script>
+        let plans = []
 
-            $(document).ready(() => {
-                $("#btnAddBudget").click((e) => {
-                    e.preventDefault()
-                    $("#staticModalBody").html(spinner)
-                    $("#staticModalBody").load("/BudgetPlan/Create")
-                })
+        function RefreshPage(filter, currentPageSize, pageNumber) {
+            location.href = `/budgetplan/settings?filter=${filter}&currentPageSize=${currentPageSize}&pageNumber=${pageNumber}`
+        }
 
-                $(".btn-warning").click(function(e){
-                    e.preventDefault()
-                    $("#staticModalBody").html(spinner)
-                    $("#staticModalBody").load("/BudgetPlan/Edit/" + $(this).data("id"))
-                })
+        $("#btnAddBudget").click((e) => {
+            e.preventDefault()
+            $("#staticModalBody").html(spinner)
+            $("#staticModalBody").load("/BudgetPlan/Create")
+        })
 
-                $(".btn-danger").click(function (e) {
-                    e.preventDefault()
-                    $("#staticModalBody").html(spinner)
-                    $("#staticModalBody").load("/BudgetPlan/Delete/" + $(this).data("id"))
-                })
+        $(".btn-warning").click(function (e) {
+            e.preventDefault()
+            $("#staticModalBody").html(spinner)
+            $("#staticModalBody").load("/BudgetPlan/Edit/" + $(this).data("id"))
+        })
 
-                $(".check").change(function(e){
-                    let id = $(this).data("id")
-                    let idx = plans.indexOf(id)
-                    console.log(id)
-                    console.log(idx)
+        $(".btn-danger").click(function (e) {
+            e.preventDefault()
+            $("#staticModalBody").html(spinner)
+            $("#staticModalBody").load("/BudgetPlan/Delete/" + $(this).data("id"))
+        })
 
-                    if (idx < 0) {
-                        plans.push(id)
-                    } else {
-                        plans.splice(idx, 1)
+        $(".check").change(function (e) {
+            let id = $(this).data("id")
+            let idx = plans.indexOf(id)
+
+            if (idx < 0) {
+                plans.push(id)
+            } else {
+                plans.splice(idx, 1)
+            }
+
+            let btnDel = $(".btn-dels")
+
+            if (plans.length > 0) {
+                btnDel.prop("disabled", false)
+            } else {
+                btnDel.prop("disabled", true)
+            }
+
+            localStorage.setItem("plans", JSON.stringify(plans))
+        })
+
+        $(".btn-dels").click(function (e) {
+            e.preventDefault()
+            let plansId = encodeURIComponent(plans.join(","))
+
+            $("#staticModalBody").html(spinner)
+            $("#staticModalBody").load("/BudgetPlan/Delete/" + plansId)
+        })
+
+        $("#btnPrev").click((e) => {
+            e.preventDefault()
+
+            RefreshPage('@ViewBag.Filter', '@ViewBag.PageSize', '@(!Model!.HasPreviousPage ? Model.PageIndex : Model.PageIndex - 1)')
+        })
+
+        $("#btnNext").click((e) => {
+            e.preventDefault()
+
+            RefreshPage('@ViewBag.Filter', '@ViewBag.PageSize', '@(!Model!.HasNextPage ? Model.PageIndex : Model.PageIndex + 1)')
+        })
+
+        $(document).ready(() => {
+            plans = JSON.parse(localStorage.getItem("plans")) || []
+            let btnDel = $(".btn-dels")
+            let checks = $(".check")
+
+            for (let i = 0; i < checks.length; i++) {
+                let checkId = $(checks[i]).data("id")
+                plans.filter(plan => {
+                    if (plan === checkId) {
+                        $(checks[i]).prop("checked", true)
                     }
-
-                    console.log(plans)
                 })
+            }
 
-                $(".btn-dels").click(function(e){
-                    console.log("button multiple delete click")
-                    e.preventDefault()
-                    $("#staticModalBody").html(spinner)
-                    let plansId = encodeURIComponent(plans.join(","))
-                    console.log(plansId)
-                    $("#staticModalBody").load("/BudgetPlan/Delete/" + plansId)
-                })
-            })
-        </script>
+            btnDel.prop("disabled", plans.length === 0)
+        })
+    </script>
 }

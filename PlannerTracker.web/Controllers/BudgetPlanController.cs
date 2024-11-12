@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using PlannerTracker.ViewModel;
+using PlannerTracker.web.AddOns;
 using PlannerTracker.web.Models;
 
 namespace PlannerTracker.web.Controllers
@@ -8,10 +9,12 @@ namespace PlannerTracker.web.Controllers
     public class BudgetPlanController : Controller
     {
         private BudgetPlanModel budgetPlan;
+        private readonly int pageSize;
 
         public BudgetPlanController(IConfiguration _config)
         {
             budgetPlan = new(_config);
+            pageSize = int.Parse(_config["PageSize"]);
         }
 
         public IActionResult Create()
@@ -114,7 +117,7 @@ namespace PlannerTracker.web.Controllers
             return await budgetPlan.DeleteBudgetPlan(auth.Token ?? string.Empty, id, auth.Id.ToString() ?? string.Empty);
         }
 
-        public async Task<IActionResult> Settings()
+        public async Task<IActionResult> Settings(string? filter, int? currentPageSize, int pageNumber = 1)
         {
             string? authStr = HttpContext.Session.GetString("auth");
             VMAuth? auth = authStr != null ? JsonConvert.DeserializeObject<VMAuth?>(authStr) : null;
@@ -123,11 +126,16 @@ namespace PlannerTracker.web.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            VMResponse<List<VMBudgetPlan>>? resBudgetPlan = await budgetPlan.Fetch(auth.Token ?? string.Empty);
+            VMResponse<List<VMBudgetPlan>>? resBudgetPlan = await budgetPlan.Fetch(auth.Token ?? string.Empty, filter);
             List<VMBudgetPlan>? data = resBudgetPlan?.Data ?? new();
 
             ViewData["Title"] = "Budget Plan Settings";
-            return View(data);
+            ViewBag.Filter = filter;
+            ViewBag.PageSize = currentPageSize ?? pageSize;
+            ViewBag.FirstIdx = ((pageNumber - 1) * ViewBag.PageSize) + 1;
+            ViewBag.LastIdx = Math.Min(data.Count, ViewBag.PageSize * pageNumber);
+
+            return View(Pagination<VMBudgetPlan>.Create(data ?? new(), pageNumber, ViewBag.PageSize));
         }
     }
 }
