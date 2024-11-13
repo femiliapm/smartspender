@@ -44,6 +44,32 @@ namespace PlannerTracker.API.Controllers
             }
         }
 
+        [HttpGet("Name")]
+        public async Task<ActionResult> FetchTagName()
+        {
+            try
+            {
+                VMResponse<List<string>> response = await Task.Run(() => tag.GetAllTagName());
+                return StatusCode((int)response.StatusCode, response);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error at TagController.FetchTagName: " + ex.Message);
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine("InnerException: " + ex.InnerException.Message);
+                }
+
+                VMError err = new()
+                {
+                    error = ex.Message,
+                    error_description = ex.Source
+                };
+
+                return StatusCode(500, err);
+            }
+        }
+
         [HttpPost]
         public async Task<ActionResult> Create(VMTagReq req)
         {

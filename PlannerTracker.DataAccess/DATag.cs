@@ -37,6 +37,29 @@ namespace PlannerTracker.DataAccess
             return response;
         }
 
+        public VMResponse<List<string>> GetAllTagName()
+        {
+            VMResponse<List<string>> response = new();
+
+            try
+            {
+                response.Data = (
+                        from t in db.Tags
+                        where t.IsDelete == false
+                        select t.TagName
+                    ).ToList();
+
+                response.StatusCode = HttpStatusCode.OK;
+                response.Message = "Successfully fetched!";
+            }
+            catch (Exception ex)
+            {
+                response.Message = $"{response.StatusCode} - {ex.Message}";
+            }
+
+            return response;
+        }
+
         public VMResponse<VMTag> Create(VMTagReq req)
         {
             VMResponse<VMTag> response = new();

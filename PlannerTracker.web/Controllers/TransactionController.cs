@@ -9,11 +9,15 @@ namespace PlannerTracker.web.Controllers
     {
         private CategoryModel category;
         private BudgetPlanModel budgetPlan;
+        private TagModel tag;
+        private TransactionModel transaction;
 
         public TransactionController(IConfiguration _config)
         {
             category = new(_config);
             budgetPlan = new(_config);
+            tag = new(_config);
+            transaction = new(_config);
         }
 
         public async Task<IActionResult> Create()
@@ -27,12 +31,29 @@ namespace PlannerTracker.web.Controllers
 
             VMResponse<List<VMCategory>>? resCategory = await category.Fetch(auth.Token ?? string.Empty, string.Empty);
             VMResponse<List<VMBudgetPlan>>? resBudgetPlan = await budgetPlan.Fetch(auth.Token ?? string.Empty, string.Empty);
+            VMResponse<List<string>>? resTag = await tag.FetchName(auth.Token ?? string.Empty);
 
             ViewBag.Title = "Add Transaction";
             ViewBag.Category = resCategory?.Data;
             ViewBag.BudgetPlan = resBudgetPlan?.Data;
+            ViewBag.Tag = resTag?.Data;
 
             return View();
+        }
+
+        [HttpPost]
+        public async Task<VMResponse<VMTransaction>?> AddTransaction(VMTransactionReq req)
+        {
+            string? authStr = HttpContext.Session.GetString("auth");
+            VMAuth? auth = authStr != null ? JsonConvert.DeserializeObject<VMAuth?>(authStr) : null;
+            if (auth == null)
+            {
+                throw new Exception("Error not permission!");
+            }
+
+            req.ModifiedBy = auth.Id;
+
+            return await transaction.SaveTransaction(req, auth.Token ?? string.Empty);
         }
     }
 }

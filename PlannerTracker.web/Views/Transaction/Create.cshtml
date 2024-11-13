@@ -10,7 +10,7 @@
         <form id="addTrans">
             <div class="mb-3">
                 <label for="date" class="form-label">Date<span class="text-danger">*</span></label>
-                <input type="date" class="form-control" id="date" name="date">
+                <input type="date" class="form-control" id="date" name="Date">
             </div>
             <div class="mb-3 row align-items-center">
                 <label class="form-label col">Type<span class="text-danger">*</span></label>
@@ -26,31 +26,33 @@
             </div>
             <div class="mb-3">
                 <label for="name" class="form-label">Name<span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="name" required>
+                <input type="text" class="form-control" id="name" required name="Name">
             </div>
             <div class="mb-3">
                 <label for="amount" class="form-label">Amount<span class="text-danger">*</span></label>
-                <input type="number" class="form-control" id="amount" required>
+                <input type="number" class="form-control" id="amount" required name="Amount">
             </div>
             <div class="mb-3">
                 <label for="BudgetPlanId" class="form-label">Budget Plan<span class="text-danger">*</span></label>
                 <select class="form-select" id="BudgetPlanId" name="BudgetPlanId" style="font-size: 14px; color: #2c3e50;">
-                    <option>-- Select Plan --</option>
+                    <option value="default">-- Select Plan --</option>
                     @foreach(var budgetPlan in ViewBag.BudgetPlan)
                     {
                         <option value="@budgetPlan.Id">@budgetPlan.PlanName</option>
                     }
                 </select>
+                <div id="budget-error" class="error"></div>
             </div>
             <div class="mb-3">
                 <label for="CategoryId" class="form-label">Category<span class="text-danger">*</span></label>
                 <select class="form-select" id="CategoryId" name="CategoryId" style="font-size: 14px; color: #2c3e50;">
-                    <option>-- Select Category --</option>
+                    <option value="default">-- Select Category --</option>
                     @foreach(var category in ViewBag.Category)
                     {
                             <option value="@category.Id">@category.CategoryName</option>
                     }
                 </select>
+                <div id="category-error" class="error"></div>
             </div>
 
             <style>
@@ -72,6 +74,7 @@
                     margin: 2px;
                     display: flex;
                     align-items: center;
+                    font-size: 14px;
                 }
 
                 .remove-tag {
@@ -79,7 +82,7 @@
                     border: none;
                     color: white;
                     font-weight: bold;
-                    margin-left: 5px;
+                    margin-left: 3px;
                     cursor: pointer;
                 }
 
@@ -88,6 +91,8 @@
                     outline: none;
                     margin-left: 5px;
                     flex: 1;
+                    font-size: 14px;
+                    color: #2c3e50;
                 }
 
                 .tag-dropdown {
@@ -107,6 +112,7 @@
                 .dropdown-item {
                     padding: 8px 12px;
                     cursor: pointer;
+                    font-size: 14px;
                 }
 
                 .dropdown-item:hover {
@@ -120,7 +126,7 @@
                     <input type="text" id="tagInput" placeholder="Type a tag and press Enter" class="tag-input" />
                     <div id="tagDropdown" class="tag-dropdown"></div> <!-- Dropdown container for suggestions -->
                 </div>
-                <input type="hidden" name="Tags" id="tagValues" />
+                <input type="hidden" name="Tag" id="tagValues" />
             </div>
         </form>
     </div>
@@ -136,7 +142,8 @@
         $("#staticModalLabel").text("@ViewBag.Title")
 
         let tags = [];
-        const availableTags = ["Food", "Transport", "Utilities", "Entertainment", "Health", "Education", "Shopping"];
+        // const availableTags = ["Food", "Transport", "Utilities", "Entertainment", "Health", "Education", "Shopping"];
+        const availableTags = @Html.Raw(Json.Serialize(ViewBag.Tag))
 
         $('#tagInput').on('focus keyup', function () {
             const inputText = $(this).val().toLowerCase();
@@ -159,17 +166,31 @@
 
         // Function to add tag to the UI and list
         function addTag(text) {
+            // Check for empty or duplicate tags
+            if (!text.trim() || tags.includes(text)) {
+                return;
+            }
+
             tags.push(text);
             updateTagValues();
 
-            const tagElement = $(`<span class="tag">${text}<button class="remove-tag" type="button">&times;</button></span>`);
+            // Create the tag element and append child elements manually
+            const tagElement = $('<span>').addClass('tag').text(text);
+            const removeButton = $('<button>')
+                .addClass('remove-tag')
+                .attr('type', 'button')
+                .html('&times;');
 
             // Attach event for removing the tag
-            tagElement.find('.remove-tag').click(function () {
+            removeButton.click(function () {
                 removeTag(text);
             });
 
-            $('#tagInput').before(tagElement);  // Insert tag before the input
+            // Append the remove button to the tag element
+            tagElement.append(removeButton);
+
+            // Insert the tag before the input field
+            $('#tagInput').before(tagElement);
         }
 
         // Function to remove tag from UI and list
@@ -189,7 +210,7 @@
             dropdown.empty();  // Clear previous options
 
             filteredTags.forEach(tag => {
-                const tagOption = $(`<div class="dropdown-item">${tag}</div>`);
+                const tagOption = $('<div>').addClass('dropdown-item').text(tag)
                 tagOption.click(function () {
                     addTag(tag);
                     $('#tagInput').val('');  // Clear input
@@ -215,5 +236,89 @@
                 hideDropdown();
             }
         });
+
+        // custom validation
+        $.validator.addMethod("selectRequired", function(value, element, arg) {
+            return arg !== value
+        }, "Please select an item!")
+
+        // validate form
+        $("#addTrans").validate({
+            rules: {
+                Date: {
+                    required: true
+                },
+                Type: "required",
+                Name: "required",
+                Amount: "required",
+                BudgetPlanId: {
+                    selectRequired: "default"
+                },
+                CategoryId: {
+                    selectRequired: "default"
+                },
+            },
+            messages: {
+                Date: {
+                    required: "Date is required!"
+                },
+                Type: {
+                    required: "Type is required!"
+                },
+                Name: {
+                    required: "Name is required!"
+                },
+                Amount: {
+                    required: "Amount is required!"
+                },
+                BudgetPlanId: {
+                    selectRequired: "Please select budget plan!"
+                },
+                CategoryId: {
+                    selectRequired: "Please select category!"
+                },
+            },
+            errorPlacement: function (error, element) {
+                error.addClass("text-danger")
+                if (element.attr("name") == "Type") {
+                    error.appendTo("#type-error"); // Tempat error di gender-error div
+                } else {
+                    error.insertAfter(element);
+                }
+            }
+        })
+
+        // btnsave on click
+        $("#btnSave").click(function(e){
+            e.preventDefault()
+            console.log("btn save clicked")
+
+            if ($("#addTrans").valid()) {
+                console.log("valid form")
+                console.log($("#addTrans").serialize())
+
+                $.ajax({
+                    url: "/Transaction/AddTransaction",
+                    type: "post",
+                    data: $("#addTrans").serialize(),
+                    dataType: "json",
+                    beforeSend: () => { },
+                    success: function (res) {
+                        if (res.statusCode == 200 || res.statusCode == 201) {
+                            toastr.success(res.message)
+                            setTimeout(function () {
+                                location.reload();
+                            }, 1500);
+                        } else {
+                            toastr.error(res.message)
+                        }
+                    },
+                    error: function (errRes) {
+                        console.error(errRes)
+                        debugger
+                    }
+                })
+            }
+        })
     });
 </script>
