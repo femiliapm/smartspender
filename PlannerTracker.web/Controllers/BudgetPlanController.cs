@@ -98,7 +98,7 @@ namespace PlannerTracker.web.Controllers
             req.ModifiedBy = auth.Id ?? default;
             req.UserId = auth.Id ?? default;
 
-            req.TotalBudget = Decimal.Parse(req.TotalBudgetStr.Replace('.', ','));
+            req.TotalBudget = Decimal.Parse(req.TotalBudgetStr?.Replace('.', ',') ?? "0");
             req.TotalBudgetStr = string.Empty;
 
             return await budgetPlan.UpdateBudgetPlan(auth.Token ?? string.Empty, req, id);

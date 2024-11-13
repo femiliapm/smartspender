@@ -41,6 +41,23 @@ namespace PlannerTracker.web.Controllers
             return View();
         }
 
+        public async Task<IActionResult> Index()
+        {
+            string? authStr = HttpContext.Session.GetString("auth");
+            VMAuth? auth = authStr != null ? JsonConvert.DeserializeObject<VMAuth?>(authStr) : null;
+            if (auth == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            VMResponse<List<VMTransaction>>? resTrans = await transaction.FetchAll(auth.Token ?? string.Empty);
+
+            ViewData["Title"] = "Transactions";
+            ViewBag.Transactions = resTrans?.Data;
+
+            return View();
+        }
+
         [HttpPost]
         public async Task<VMResponse<VMTransaction>?> AddTransaction(VMTransactionReq req)
         {

@@ -84,6 +84,9 @@ namespace PlannerTracker.DataAccess
                             ExpenseName = req.Name,
                         };
 
+                        db.Add(expense);
+                        db.SaveChanges();
+
                         List<string> tagsStr = req.Tag?.Split(",").ToList() ?? new();
 
                         if (tagsStr.Count > 0)
@@ -131,6 +134,72 @@ namespace PlannerTracker.DataAccess
                     dbTran.Rollback();
                     response.Message = $"{response.StatusCode} - {ex.Message}";
                 }
+            }
+
+            return response;
+        }
+
+        public VMResponse<List<VMTransaction>> Fetch()
+        {
+            VMResponse<List<VMTransaction>> response = new();
+
+            try
+            {
+                List<VMTransaction> dataIncome = (
+                        from i in db.Incomes
+                        where i.IsDelete == false
+                        join bp in db.BudgetPlans on i.BudgetPlanId equals bp.Id
+                        join c in db.Categories on i.CategoryId equals c.Id
+                        select new VMTransaction()
+                        {
+                            Amount = i.Amount,
+                            BudgetPlan = bp.PlanName,
+                            Category = c.CategoryName,
+                            Date = i.IncomeDate,
+                            Id = i.Id,
+                            Name = i.Source,
+                            Type = "Income",
+                            Tag = (
+                                from it in db.IncomeTags
+                                where it.IsDelete == false && it.IncomeId == i.Id
+                                join t in db.Tags on it.TagId equals t.Id
+                                select t.TagName
+                            ).ToList()
+                        }
+                    ).ToList();
+
+                List<VMTransaction> dataExpense = (
+                        from e in db.Expenses
+                        where e.IsDelete == false
+                        join bp in db.BudgetPlans on e.BudgetPlanId equals bp.Id
+                        join c in db.Categories on e.CategoryId equals c.Id
+                        select new VMTransaction()
+                        {
+                            Amount = e.Amount,
+                            BudgetPlan = bp.PlanName,
+                            Category = c.CategoryName,
+                            Date = e.ExpenseDate,
+                            Id = e.Id,
+                            Name = e.ExpenseName,
+                            Type = "Expense",
+                            Tag = (
+                                from et in db.ExpenseTags
+                                where et.IsDelete == false && et.ExpenseId == e.Id
+                                join t in db.Tags on et.TagId equals t.Id
+                                select t.TagName
+                            ).ToList()
+                        }
+                    ).ToList();
+
+                dataIncome.AddRange(dataExpense);
+
+                response.Data = dataIncome.OrderByDescending(d => d.Date).ToList();
+                response.StatusCode = HttpStatusCode.OK;
+                response.Message = "Successfully fetched!";
+            }
+            catch (Exception ex)
+            {
+                response.Message = $"{response.StatusCode} - {ex.Message}";
             }
 
             return response;

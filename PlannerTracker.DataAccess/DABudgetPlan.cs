@@ -27,7 +27,23 @@ namespace PlannerTracker.DataAccess
                         )
                         orderby bp.CreatedOn descending
                         select new VMBudgetPlan(bp)
+                        {
+                            TotalIncome = (
+                                from i in db.Incomes
+                                where i.IsDelete == false && i.BudgetPlanId == bp.Id
+                                select i.Amount
+                            ).Sum(),
+                            TotalExpense = (
+                                from e in db.Expenses
+                                where e.IsDelete == false && e.BudgetPlanId == bp.Id
+                                select e.Amount
+                            ).Sum(),
+                        }
                     ).ToList();
+
+                response.Data.ForEach(bp => bp.Progress = ((int)bp.TotalIncome - (int)bp.TotalExpense) * 100 / (int)bp.TotalBudget);
+
+                response.Data = response.Data.OrderByDescending(bp => bp.Progress).ToList();
 
                 response.StatusCode = HttpStatusCode.OK;
                 response.Message = "Successfully fetched!";

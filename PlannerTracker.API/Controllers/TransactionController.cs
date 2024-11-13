@@ -43,5 +43,31 @@ namespace PlannerTracker.API.Controllers
                 return StatusCode(500, err);
             }
         }
+
+        [HttpGet]
+        public async Task<ActionResult> Fetch()
+        {
+            try
+            {
+                VMResponse<List<VMTransaction>> response = await Task.Run(() => transaction.Fetch());
+                return StatusCode((int)response.StatusCode, response);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error at TransactionController.Fetch: " + ex.Message);
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine("InnerException: " + ex.InnerException.Message);
+                }
+
+                VMError err = new()
+                {
+                    error = ex.Message,
+                    error_description = ex.Source
+                };
+
+                return StatusCode(500, err);
+            }
+        }
     }
 }

@@ -9,6 +9,6 @@
         public decimal Amount { get; set; }
         public string BudgetPlan { get; set; } = null!;
         public string Category { get; set; } = null!;
-        public string? Tag { get; set; }
+        public List<string>? Tag { get; set; }
     }
 }

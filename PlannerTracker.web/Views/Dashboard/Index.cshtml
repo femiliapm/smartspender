@@ -1,7 +1,26 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+
+@using System.Globalization
+
 @{
+    decimal totalBalance = 0;
+    decimal totalIncome = 0;
+    decimal totalExpense = 0;
+
+    foreach(var trans in ViewBag.Transactions)
+    {
+        totalBalance += trans.Amount;
+        if (trans.Type == "Income")
+        {
+            totalIncome += trans.Amount;
+        }
+        else if (trans.Type == "Expense")
+        {
+            totalExpense += trans.Amount;
+        }
+    }
 }
 
 <style>
@@ -156,15 +175,15 @@
 <section class="balance-overview">
     <div class="balance">
         <h2>Total Balance</h2>
-        <p>$3,250.00</p>
+        <p>@totalBalance.ToString("C", new CultureInfo("id-ID"))</p>
     </div>
     <div class="income">
         <h3>Income</h3>
-        <p>$5,000.00</p>
+        <p>@totalIncome.ToString("C", new CultureInfo("id-ID"))</p>
     </div>
     <div class="expense">
         <h3>Expenses</h3>
-        <p>$1,750.00</p>
+        <p>@totalExpense.ToString("C", new CultureInfo("id-ID"))</p>
     </div>
 </section>
 
@@ -172,31 +191,44 @@
 <section class="transactions">
     <div class="d-flex align-items-center justify-content-between">
         <h2>Recent Transactions</h2>
-        <a href="/transactions">See all</a>
+        <a href="/transaction">See all</a>
     </div>
     <table>
         <thead>
             <tr>
                 <th>Date</th>
+                <th>Budget Plan</th>
                 <th>Category</th>
+                <th>Type</th>
                 <th>Amount</th>
                 <th>Notes</th>
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>2024-10-30</td>
-                <td>Food</td>
-                <td>$50.00</td>
-                <td>Groceries</td>
-            </tr>
-            <tr>
-                <td>2024-10-29</td>
-                <td>Utilities</td>
-                <td>$100.00</td>
-                <td>Electric Bill</td>
-            </tr>
-            <!-- Add more rows as needed -->
+            @if(ViewBag.Transactions != null)
+            {
+                int max = (ViewBag.Transactions.Count > 5) ? 5 : ViewBag.Transactions.Count;
+                @for(int i = 0; i < max; i++)
+                {
+                    <tr>
+                        <td>@ViewBag.Transactions[i].Date.ToString("D")</td>
+                        <td>@ViewBag.Transactions[i].BudgetPlan</td>
+                        <td>@ViewBag.Transactions[i].Category</td>
+                        <td>
+                            <span class="badge @(ViewBag.Transactions[i].Type == "Income" ? "bg-success" : "bg-danger")">
+                                @ViewBag.Transactions[i].Type
+                            </span>
+                        </td>
+                        <td>@ViewBag.Transactions[i].Amount.ToString("C", new CultureInfo("id-ID"))</td>
+                        <td>@ViewBag.Transactions[i].Name</td>
+                    </tr>
+                }
+            } else
+            {
+                <tr colspan="5">
+                    --No Data Transactions--
+                </tr>
+            }
         </tbody>
     </table>
 </section>
@@ -226,14 +258,19 @@
         </div>
     </div>
 
-    <div class="goal">
-        <h3>Food</h3>
-        <div class="progress-bar">
-            <div class="progress" style="width: 75%;"></div>
-        </div>
-        <p>75% of $400 goal</p>
-    </div>
-    <!-- Add more goals as needed -->
+    @if(ViewBag.Budgets != null)
+    {
+        @foreach(var budget in ViewBag.Budgets)
+        {
+            <div class="goal">
+                <h3>@budget.PlanName</h3>
+                <div class="progress-bar">
+                    <div class="progress" style="width: @budget.Progress%;"></div>
+                </div>
+                <p>@budget.Progress % of @budget.TotalBudget.ToString("C", new CultureInfo("id-ID")) goal</p>
+            </div>
+        }
+    }
 </section>
 
 <!-- Upcoming Bills -->
@@ -245,138 +282,6 @@
         <!-- Add more bills as needed -->
     </ul>
 </section>
-
-@* TO BE DELETED! *@
-@*
-<style>
-    /* Tag Expense Section */
-    .tag-expense {
-        background-color: #ECF0F1;
-        padding: 20px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-    }
-
-        .tag-expense h2 {
-            color: #2C3E50;
-            margin-bottom: 15px;
-        }
-
-    .tag-expense-form {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-        .tag-expense-form label {
-            font-size: 1em;
-            color: #2C3E50;
-        }
-
-        .tag-expense-form input,
-        .tag-expense-form select {
-            padding: 10px;
-            border: 1px solid #CCC;
-            border-radius: 5px;
-        }
-
-            .tag-expense-form input[type="number"] {
-                -moz-appearance: textfield;
-            }
-
-        .tag-expense-form button {
-            margin-top: 10px;
-            padding: 10px 20px;
-            background-color: #3498DB;
-            color: #FFF;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-        }
-
-            .tag-expense-form button:hover {
-                background-color: #2980B9;
-            }
-
-    /* Tagged Expenses List */
-    .tagged-expenses-list h3 {
-        margin-top: 20px;
-        color: #2C3E50;
-    }
-
-    .tagged-expenses-list ul {
-        list-style-type: none;
-        padding: 0;
-    }
-
-    .tagged-expenses-list li {
-        padding: 10px;
-        border-bottom: 1px solid #CCC;
-        color: #333;
-    }
-
-    /* Badge Styles for Categories */
-    .badge {
-        padding: 5px 10px;
-        border-radius: 12px;
-        font-size: 0.9em;
-        color: #FFF;
-    }
-
-    .category-food {
-        background-color: #27AE60;
-    }
-
-    .category-transportation {
-        background-color: #3498DB;
-    }
-
-    .category-entertainment {
-        background-color: #9B59B6;
-    }
-
-    .category-utilities {
-        background-color: #E67E22;
-    }
-
-    .category-other {
-        background-color: #95A5A6;
-    }
-
-</style>
-
-<div class="tag-expense">
-    <h2>Tag Expense</h2>
-    <div class="tag-expense-form">
-        <label for="expense-name">Expense Name</label>
-        <input type="text" id="expense-name" placeholder="Enter expense name">
-
-        <label for="expense-amount">Amount</label>
-        <input type="number" id="expense-amount" placeholder="Enter amount">
-
-        <label for="expense-category">Category</label>
-        <select id="expense-category">
-            <option value="food">Food</option>
-            <option value="transportation">Transportation</option>
-            <option value="entertainment">Entertainment</option>
-            <option value="utilities">Utilities</option>
-            <option value="other">Other</option>
-        </select>
-
-        <button class="btn-tag-expense">Tag Expense</button>
-    </div>
-    <div class="tagged-expenses-list">
-        <h3>Recent Tagged Expenses</h3>
-        <ul>
-            <li>Lunch - $10 - <span class="badge category-food">Food</span></li>
-            <li>Bus Ticket - $3 - <span class="badge category-transportation">Transportation</span></li>
-            <li>Movie - $15 - <span class="badge category-entertainment">Entertainment</span></li>
-        </ul>
-    </div>
-</div>
-*@
-@* TO BE DELETED! *@
 
 @section Scripts {
     <script>
