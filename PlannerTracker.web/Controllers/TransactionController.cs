@@ -38,9 +38,9 @@ namespace PlannerTracker.web.Controllers
             VMResponse<List<string>>? resTag = await tag.FetchName(auth.Token ?? string.Empty);
 
             ViewBag.Title = "Add Transaction";
-            ViewBag.Category = resCategory?.Data;
-            ViewBag.BudgetPlan = resBudgetPlan?.Data;
-            ViewBag.Tag = resTag?.Data;
+            ViewBag.Category = resCategory?.Data?.OrderBy(c => c.CategoryName).ToList();
+            ViewBag.BudgetPlan = resBudgetPlan?.Data?.OrderBy(bp => bp.PlanName).ToList();
+            ViewBag.Tag = resTag?.Data?.OrderBy(t => t).ToList();
 
             return View();
         }
