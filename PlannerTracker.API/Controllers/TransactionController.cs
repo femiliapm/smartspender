@@ -45,11 +45,11 @@ namespace PlannerTracker.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> Fetch()
+        public async Task<ActionResult> Fetch(string? filter)
         {
             try
             {
-                VMResponse<List<VMTransaction>> response = await Task.Run(() => transaction.Fetch());
+                VMResponse<List<VMTransaction>> response = await Task.Run(() => transaction.Fetch(filter));
                 return StatusCode((int)response.StatusCode, response);
             }
             catch (Exception ex)

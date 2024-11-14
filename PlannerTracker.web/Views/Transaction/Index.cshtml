@@ -4,6 +4,8 @@
 
 @using System.Globalization
 
+@model Pagination<VMTransaction>?
+
 @{
 }
 
@@ -20,25 +22,25 @@
         margin-bottom: 20px;
     }
 
-    .header .logo {
-        color: #fff;
-        font-size: 1.5em;
-        font-weight: bold;
-    }
+        .header .logo {
+            color: #fff;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
 
-    .header .actions button {
-        margin-left: 10px;
-        padding: 8px 16px;
-        background-color: #3498DB;
-        color: #FFF;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
+        .header .actions button {
+            margin-left: 10px;
+            padding: 8px 16px;
+            background-color: #3498DB;
+            color: #FFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
 
-    .header .actions .button-add {
-        background-color: #2ECC71;
-    }
+        .header .actions .button-add {
+            background-color: #2ECC71;
+        }
 
     /* Transactions Table */
     .transactions {
@@ -48,29 +50,29 @@
         margin-bottom: 20px;
     }
 
-    .transactions h2 {
-        margin-bottom: 15px;
-    }
+        .transactions h2 {
+            margin-bottom: 15px;
+        }
 
-    .transactions table {
-        width: 100%;
-        border-collapse: collapse;
-    }
+        .transactions table {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-    .transactions th, .transactions td {
-        padding: 12px;
-        text-align: center;
-        border-bottom: 1px solid #CCC;
-    }
+        .transactions th, .transactions td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #CCC;
+        }
 
-    .transactions th {
-        background-color: #34495E;
-        color: #FFF;
-    }
+        .transactions th {
+            background-color: #34495E;
+            color: #FFF;
+        }
 
-    .transactions td {
-        background-color: #FFF;
-    }
+        .transactions td {
+            background-color: #FFF;
+        }
 </style>
 
 <!-- Header Section -->
@@ -83,6 +85,18 @@
 
 <!-- Recent Transactions -->
 <section class="transactions">
+    <div class="d-flex justify-content-end">
+        <form class="search-group mb-3" asp-action="index" asp-controller="transaction">
+            <div class="input-group">
+                <input type="text" name="filter" id="filter" class="form-control" placeholder="Search transaction..."
+                       value="@ViewBag.Filter">
+                <button class="btn btn-primary input-group-text btn-search">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+
     <table>
         <thead>
             <tr>
@@ -95,22 +109,22 @@
             </tr>
         </thead>
         <tbody>
-            @if (ViewBag.Transactions != null)
+            @if (Model != null)
             {
-                int max = ViewBag.Transactions.Count;
+                int max = Model.Count;
                 @for (int i = 0; i < max; i++)
                 {
                     <tr>
-                        <td>@ViewBag.Transactions[i].Date.ToString("D")</td>
-                        <td>@ViewBag.Transactions[i].BudgetPlan</td>
-                        <td>@ViewBag.Transactions[i].Category</td>
+                        <td>@Model[i].Date.ToString("D")</td>
+                        <td>@Model[i].BudgetPlan</td>
+                        <td>@Model[i].Category</td>
                         <td>
-                            <span class="badge @(ViewBag.Transactions[i].Type == "Income" ? "bg-success" : "bg-danger")">
-                                @ViewBag.Transactions[i].Type
+                            <span class="badge @(Model[i].Type == "Income" ? "bg-success" : "bg-danger")">
+                                @Model[i].Type
                             </span>
                         </td>
-                        <td>@ViewBag.Transactions[i].Amount.ToString("C", new CultureInfo("id-ID"))</td>
-                        <td>@ViewBag.Transactions[i].Name</td>
+                        <td>@Model[i].Amount.ToString("C", new CultureInfo("id-ID"))</td>
+                        <td>@Model[i].Name</td>
                     </tr>
                 }
             }
@@ -122,4 +136,39 @@
             }
         </tbody>
     </table>
+
+    <div class="d-flex justify-content-end gap-1 mt-3">
+        @if (Model != null)
+        {
+            <div class="my-auto me-3">Menampilkan @ViewBag.FirstIdx-@ViewBag.LastIdx dari @Model.TotalData</div>
+            <button class="btn @(Model.HasPreviousPage ? "btn-outline-primary" : "btn-secondary disabled")" id="btnPrev">
+                <i class="fas fa-angle-left"></i>
+            </button>
+            <button class="btn @(Model.HasNextPage ? "btn-outline-primary" : "btn-secondary disabled")" id="btnNext">
+                <i class="fas fa-angle-right"></i>
+            </button>
+        }
+    </div>
 </section>
+
+@section Scripts {
+    <script>
+        function RefreshPage(filter, currentPageSize, pageNumber) {
+            location.href = `/budgetplan/settings?filter=${filter}&currentPageSize=${currentPageSize}&pageNumber=${pageNumber}`
+        }
+
+        $(document).ready(() => {
+            $("#btnPrev").click((e) => {
+                e.preventDefault()
+
+                RefreshPage('@ViewBag.Filter', '@ViewBag.PageSize', '@(!Model!.HasPreviousPage ? Model.PageIndex : Model.PageIndex - 1)')
+            })
+
+            $("#btnNext").click((e) => {
+                e.preventDefault()
+
+                RefreshPage('@ViewBag.Filter', '@ViewBag.PageSize', '@(!Model!.HasNextPage ? Model.PageIndex : Model.PageIndex + 1)')
+            })
+        })
+    </script>
+}

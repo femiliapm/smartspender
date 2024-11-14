@@ -139,13 +139,13 @@ namespace PlannerTracker.DataAccess
             return response;
         }
 
-        public VMResponse<List<VMTransaction>> Fetch()
+        public VMResponse<List<VMTransaction>> Fetch(string? filter)
         {
             VMResponse<List<VMTransaction>> response = new();
 
             try
             {
-                List<VMTransaction> dataIncome = (
+                List<VMTransaction> data = (
                         from i in db.Incomes
                         where i.IsDelete == false
                         join bp in db.BudgetPlans on i.BudgetPlanId equals bp.Id
@@ -191,9 +191,20 @@ namespace PlannerTracker.DataAccess
                         }
                     ).ToList();
 
-                dataIncome.AddRange(dataExpense);
+                data.AddRange(dataExpense);
 
-                response.Data = dataIncome.OrderByDescending(d => d.Date).ToList();
+                data = data.OrderByDescending(d => d.Date).ToList();
+                if (!string.IsNullOrEmpty(filter))
+                {
+                    data = data.Where(dt =>
+                        dt.BudgetPlan.ToLower().Contains(filter.ToLower()) ||
+                        dt.Category.ToLower().Contains(filter.ToLower()) ||
+                        dt.Type.ToLower().Contains(filter.ToLower()) ||
+                        dt.Name.ToLower().Contains(filter.ToLower())
+                    ).ToList();
+                }
+
+                response.Data = data;
                 response.StatusCode = HttpStatusCode.OK;
                 response.Message = "Successfully fetched!";
             }

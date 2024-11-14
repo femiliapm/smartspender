@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using PlannerTracker.ViewModel;
+using PlannerTracker.web.AddOns;
 using PlannerTracker.web.Models;
 
 namespace PlannerTracker.web.Controllers
@@ -12,12 +13,15 @@ namespace PlannerTracker.web.Controllers
         private TagModel tag;
         private TransactionModel transaction;
 
+        private readonly int pageSize;
+
         public TransactionController(IConfiguration _config)
         {
             category = new(_config);
             budgetPlan = new(_config);
             tag = new(_config);
             transaction = new(_config);
+            pageSize = int.Parse(_config["PageSize"]);
         }
 
         public async Task<IActionResult> Create()
@@ -41,7 +45,7 @@ namespace PlannerTracker.web.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? filter, int? currentPageSize, int pageNumber = 1)
         {
             string? authStr = HttpContext.Session.GetString("auth");
             VMAuth? auth = authStr != null ? JsonConvert.DeserializeObject<VMAuth?>(authStr) : null;
@@ -50,12 +54,16 @@ namespace PlannerTracker.web.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            VMResponse<List<VMTransaction>>? resTrans = await transaction.FetchAll(auth.Token ?? string.Empty);
+            VMResponse<List<VMTransaction>>? resTrans = await transaction.FetchAll(auth.Token ?? string.Empty, filter);
+            List<VMTransaction> data = resTrans?.Data ?? new();
 
             ViewData["Title"] = "Transactions";
-            ViewBag.Transactions = resTrans?.Data;
+            ViewBag.Filter = filter;
+            ViewBag.PageSize = currentPageSize ?? pageSize;
+            ViewBag.FirstIdx = ((pageNumber - 1) * ViewBag.PageSize) + 1;
+            ViewBag.LastIdx = Math.Min(data.Count, ViewBag.PageSize * pageNumber);
 
-            return View();
+            return View(Pagination<VMTransaction>.Create(data ?? new(), pageNumber, ViewBag.PageSize));
         }
 
         [HttpPost]

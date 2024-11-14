@@ -25,7 +25,7 @@ namespace PlannerTracker.web.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            VMResponse<List<VMTransaction>>? resTrans = await transaction.FetchAll(auth.Token ?? string.Empty);
+            VMResponse<List<VMTransaction>>? resTrans = await transaction.FetchAll(auth.Token ?? string.Empty, string.Empty);
             VMResponse<List<VMBudgetPlan>>? resBudget = await budgetPlan.Fetch(auth.Token ?? string.Empty, string.Empty);
 
             ViewData["Title"] = "Dashboard";
