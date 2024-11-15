@@ -18,6 +18,11 @@ namespace PlannerTracker.web.Controllers
             return View();
         }
 
+        public IActionResult Test()
+        {
+            return View();
+        }
+
         [HttpGet("/privacy")]
         public IActionResult Privacy()
         {

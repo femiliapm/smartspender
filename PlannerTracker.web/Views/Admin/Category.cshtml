@@ -5,19 +5,17 @@ For more information on enabling MVC for empty projects, visit https://go.micros
 @model Pagination<VMCategory>?
 
 @{
-    Layout = "_AdminLayout";
+    // Layout = "_AdminLayout";
     ViewData["Title"] = "Manage Category";
 }
 
 @section Breadcrumbs {
-    <div class="d-flex justify-content-end">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/admin">Admin Dashboard</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Manage Category</li>
-            </ol>
-        </nav>
-    </div>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb breadcrumb-right">
+            <li class="breadcrumb-item"><a href="/admin">Admin Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Manage Category</li>
+        </ol>
+    </nav>
 }
 
 <div class="container-fluid">
