@@ -1,0 +1,123 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@using System.Globalization
+
+@model Pagination<VMBudgetPlan>?
+
+@{
+}
+
+<style>
+    /* Header */
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #2C3E50;
+        color: #FFF;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+        .header .logo {
+            color: #fff;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .header .actions button {
+            margin-left: 10px;
+            padding: 8px 16px;
+            background-color: #3498DB;
+            color: #FFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .header .actions .button-add {
+            background-color: #2ECC71;
+        }
+
+    /* Budget Goals */
+    .budget-goals {
+        background-color: #ECF0F1;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+        .budget-goals .goal {
+            margin-bottom: 15px;
+        }
+</style>
+
+<!-- Header Section -->
+<header class="header">
+    <div class="logo">Budget Goals</div>
+    <div class="actions">
+        <a href="/budgetplan/settings" class="btn btn-outline-primary" id="btnSettingsBudget">Settings</a>
+        <button class="button-add" id="btnAddBudget" data-bs-toggle="modal" data-bs-target="#staticModal">+ Add Budget Plan</button>
+    </div>
+</header>
+
+<!-- Budget Goals -->
+<section class="budget-goals">
+
+    @if (Model != null && Model.Count > 0)
+    {
+        @foreach (var budget in Model)
+        {
+            <div class="goal">
+                <h4>@budget.PlanName</h4>
+                <div class="progress progress-sm progress-primary mb-3">
+                    <div class="progress-bar" role="progressbar" style="width: @budget.Progress%; background-color: #3498DB;" aria-valuenow="@budget.Progress" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+
+                <p>@budget.Progress % of @budget.TotalBudget.ToString("C", new CultureInfo("id-ID")) goal</p>
+            </div>
+        }
+    }
+
+    <div class="d-flex justify-content-end gap-1 mt-3">
+        @if (Model != null)
+        {
+            <div class="my-auto me-3">Menampilkan @ViewBag.FirstIdx-@ViewBag.LastIdx dari @Model.TotalData</div>
+            <button class="btn @(Model.HasPreviousPage ? "btn-outline-primary" : "btn-secondary disabled")" id="btnPrev">
+                <i class="fas fa-angle-left"></i>
+            </button>
+            <button class="btn @(Model.HasNextPage ? "btn-outline-primary" : "btn-secondary disabled")" id="btnNext">
+                <i class="fas fa-angle-right"></i>
+            </button>
+        }
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        function RefreshPage(currentPageSize, pageNumber) {
+            location.href = `/budgetplan/currentPageSize=${currentPageSize}&pageNumber=${pageNumber}`
+        }
+
+        $("#btnAddBudget").click((e) => {
+            e.preventDefault()
+            $("#staticModalBody").html(spinner)
+            $("#staticModalBody").load("/BudgetPlan/Create")
+        })
+
+        $("#btnPrev").click((e) => {
+            e.preventDefault()
+
+            RefreshPage('@ViewBag.Filter', '@ViewBag.PageSize', '@(!Model!.HasPreviousPage ? Model.PageIndex : Model.PageIndex - 1)')
+        })
+
+        $("#btnNext").click((e) => {
+            e.preventDefault()
+
+            RefreshPage('@ViewBag.Filter', '@ViewBag.PageSize', '@(!Model!.HasNextPage ? Model.PageIndex : Model.PageIndex + 1)')
+        })
+    </script>
+}

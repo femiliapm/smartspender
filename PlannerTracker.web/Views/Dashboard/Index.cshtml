@@ -9,7 +9,7 @@
     decimal totalIncome = 0;
     decimal totalExpense = 0;
 
-    foreach(var trans in ViewBag.Transactions)
+    foreach (var trans in ViewBag.Transactions)
     {
         totalBalance += trans.Amount;
         if (trans.Type == "Income")
@@ -129,20 +129,20 @@
         margin-bottom: 15px;
     }
 
-    .budget-goals .progress-bar {
-        background-color: #EEE;
-        border-radius: 5px;
-        height: 10px;
-        width: 100%;
-        margin-top: 8px;
-        overflow: hidden;
-    }
+    /* .budget-goals .progress-bar {
+                    background-color: #EEE;
+                    border-radius: 5px;
+                    height: 10px;
+                    width: 100%;
+                    margin-top: 8px;
+                    overflow: hidden;
+                } */
 
-    .budget-goals .progress {
-        background-color: #3498DB;
-        height: 100%;
-        border-radius: 5px 0 0 5px;
-    }
+    /* .budget-goals .progress {
+                    background-color: #3498DB;
+                    height: 100%;
+                    border-radius: 5px 0 0 5px;
+                } */
 
     /* Upcoming Bills */
     .upcoming-bills {
@@ -191,7 +191,7 @@
 <section class="transactions">
     <div class="d-flex align-items-center justify-content-between">
         <h2>Recent Transactions</h2>
-        <a href="/transaction">See all</a>
+        <a class="fw-bold" href="/transaction">See all</a>
     </div>
     <table>
         <thead>
@@ -205,10 +205,10 @@
             </tr>
         </thead>
         <tbody>
-            @if(ViewBag.Transactions != null)
+            @if (ViewBag.Transactions != null)
             {
                 int max = (ViewBag.Transactions.Count > 5) ? 5 : ViewBag.Transactions.Count;
-                @for(int i = 0; i < max; i++)
+                @for (int i = 0; i < max; i++)
                 {
                     <tr>
                         <td>@ViewBag.Transactions[i].Date.ToString("D")</td>
@@ -223,7 +223,8 @@
                         <td>@ViewBag.Transactions[i].Name</td>
                     </tr>
                 }
-            } else
+            }
+            else
             {
                 <tr colspan="5">
                     --No Data Transactions--
@@ -248,7 +249,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="d-flex align-items-center">
             <h2 class="m-0 me-3">Budget Goals</h2>
-            <a href="/budgetplan/settings">Settings</a>
+            <a class="fw-bold" href="/budgetplan/settings">Settings</a>
         </div>
         <!-- Add Budget Plan Button -->
         <div class="d-flex justify-content-end mb-3">
@@ -258,15 +259,18 @@
         </div>
     </div>
 
-    @if(ViewBag.Budgets != null)
+
+
+    @if (ViewBag.Budgets != null)
     {
-        @foreach(var budget in ViewBag.Budgets)
+        @foreach (var budget in ViewBag.Budgets)
         {
             <div class="goal">
-                <h3>@budget.PlanName</h3>
-                <div class="progress-bar">
-                    <div class="progress" style="width: @budget.Progress%;"></div>
+                <h4>@budget.PlanName</h4>
+                <div class="progress progress-sm progress-primary mb-3">
+                    <div class="progress-bar" role="progressbar" style="width: @budget.Progress%; background-color: #3498DB;" aria-valuenow="@budget.Progress" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
+
                 <p>@budget.Progress % of @budget.TotalBudget.ToString("C", new CultureInfo("id-ID")) goal</p>
             </div>
         }

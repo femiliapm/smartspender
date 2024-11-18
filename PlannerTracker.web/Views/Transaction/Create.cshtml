@@ -5,7 +5,7 @@
     Layout = null;
 }
 
-<div class="card">
+<div class="card m-0">
     <div class="card-body">
         <form id="addTrans">
             <div class="mb-3">
@@ -34,9 +34,9 @@
             </div>
             <div class="mb-3">
                 <label for="BudgetPlanId" class="form-label">Budget Plan<span class="text-danger">*</span></label>
-                <select class="form-select" id="BudgetPlanId" name="BudgetPlanId" style="font-size: 14px; color: #2c3e50;">
+                <select class="form-select" id="BudgetPlanId" name="BudgetPlanId" style="color: #2c3e50;">
                     <option value="default">-- Select Plan --</option>
-                    @foreach(var budgetPlan in ViewBag.BudgetPlan)
+                    @foreach (var budgetPlan in ViewBag.BudgetPlan)
                     {
                         <option value="@budgetPlan.Id">@budgetPlan.PlanName</option>
                     }
@@ -45,11 +45,11 @@
             </div>
             <div class="mb-3">
                 <label for="CategoryId" class="form-label">Category<span class="text-danger">*</span></label>
-                <select class="form-select" id="CategoryId" name="CategoryId" style="font-size: 14px; color: #2c3e50;">
+                <select class="form-select" id="CategoryId" name="CategoryId" style="color: #2c3e50;">
                     <option value="default">-- Select Category --</option>
-                    @foreach(var category in ViewBag.Category)
+                    @foreach (var category in ViewBag.Category)
                     {
-                            <option value="@category.Id">@category.CategoryName</option>
+                        <option value="@category.Id">@category.CategoryName</option>
                     }
                 </select>
                 <div id="category-error" class="error"></div>
@@ -74,7 +74,6 @@
                     margin: 2px;
                     display: flex;
                     align-items: center;
-                    font-size: 14px;
                 }
 
                 .remove-tag {
@@ -91,7 +90,6 @@
                     outline: none;
                     margin-left: 5px;
                     flex: 1;
-                    font-size: 14px;
                     color: #2c3e50;
                 }
 
@@ -112,12 +110,11 @@
                 .dropdown-item {
                     padding: 8px 12px;
                     cursor: pointer;
-                    font-size: 14px;
                 }
 
-                .dropdown-item:hover {
-                    background-color: #f1f1f1;
-                }
+                    .dropdown-item:hover {
+                        background-color: #f1f1f1;
+                    }
             </style>
 
             <div class="mb-3">
@@ -145,11 +142,11 @@
         // const availableTags = ["Food", "Transport", "Utilities", "Entertainment", "Health", "Education", "Shopping"];
         const availableTags = @Html.Raw(Json.Serialize(ViewBag.Tag))
 
-        $('#tagInput').on('focus keyup', function () {
-            const inputText = $(this).val().toLowerCase();
-            const filteredTags = availableTags.filter(tag => tag.toLowerCase().includes(inputText) && !tags.includes(tag));
-            showDropdown(filteredTags);
-        });
+            $('#tagInput').on('focus keyup', function () {
+                const inputText = $(this).val().toLowerCase();
+                const filteredTags = availableTags.filter(tag => tag.toLowerCase().includes(inputText) && !tags.includes(tag));
+                showDropdown(filteredTags);
+            });
 
         $('#tagInput').keypress(function (e) {
             if (e.key === 'Enter') {
@@ -238,7 +235,7 @@
         });
 
         // custom validation
-        $.validator.addMethod("selectRequired", function(value, element, arg) {
+        $.validator.addMethod("selectRequired", function (value, element, arg) {
             return arg !== value
         }, "Please select an item!")
 
@@ -289,7 +286,7 @@
         })
 
         // btnsave on click
-        $("#btnSave").click(function(e){
+        $("#btnSave").click(function (e) {
             e.preventDefault()
             console.log("btn save clicked")
 

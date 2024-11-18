@@ -6,6 +6,10 @@ For more information on enabling MVC for empty projects, visit https://go.micros
     ViewData["Title"] = "Admin Dashboard";
 }
 
+@section TitlePage {
+    <h1 class="text-center my-2 admin-title">@ViewData["Title"]</h1>
+}
+
 <!-- Admin Container -->
 <div class="container-fluid">
     <!-- General Settings Section -->

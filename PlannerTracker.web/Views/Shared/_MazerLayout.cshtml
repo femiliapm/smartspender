@@ -52,10 +52,7 @@
 
             <div class="content-wrapper container">
                 <main role="main">
-                    @if (data != null && data.Role == "Admin")
-                    {
-                        <h1 class="text-center my-2 admin-title">@ViewData["Title"]</h1>
-                    }
+                    @await RenderSectionAsync("TitlePage", required: false)
                     @await RenderSectionAsync("Breadcrumbs", required: false)
                     @RenderBody()
                 </main>

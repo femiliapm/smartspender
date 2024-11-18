@@ -158,6 +158,12 @@
         }
 
         $(document).ready(() => {
+            $(".button-add").click((e) => {
+                e.preventDefault()
+                $("#staticModalBody").html(spinner)
+                $("#staticModalBody").load("/Transaction/Create")
+            })
+
             $("#btnPrev").click((e) => {
                 e.preventDefault()
 

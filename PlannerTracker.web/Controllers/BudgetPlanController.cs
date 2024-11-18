@@ -137,5 +137,26 @@ namespace PlannerTracker.web.Controllers
 
             return View(Pagination<VMBudgetPlan>.Create(data ?? new(), pageNumber, ViewBag.PageSize));
         }
+
+        public async Task<IActionResult> Index(int? currentPageSize, int pageNumber = 1)
+        {
+            string? authStr = HttpContext.Session.GetString("auth");
+            VMAuth? auth = authStr != null ? JsonConvert.DeserializeObject<VMAuth?>(authStr) : null;
+            if (auth == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            VMResponse<List<VMBudgetPlan>>? resBudget = await budgetPlan.Fetch(auth.Token ?? string.Empty, string.Empty);
+            List<VMBudgetPlan>? data = resBudget?.Data ?? new();
+
+            ViewData["Title"] = "Budget Plan";
+            ViewBag.Budgets = resBudget?.Data;
+            ViewBag.PageSize = currentPageSize ?? pageSize;
+            ViewBag.FirstIdx = ((pageNumber - 1) * ViewBag.PageSize) + 1;
+            ViewBag.LastIdx = Math.Min(data.Count, ViewBag.PageSize * pageNumber);
+
+            return View(Pagination<VMBudgetPlan>.Create(data ?? new(), pageNumber, ViewBag.PageSize));
+        }
     }
 }
