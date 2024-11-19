@@ -3,6 +3,7 @@
 *@
 
 @using System.Globalization
+@using Newtonsoft.Json;
 
 @{
     decimal totalBalance = 0;
@@ -11,6 +12,7 @@
 
     foreach (var trans in ViewBag.Transactions)
     {
+        Console.WriteLine(JsonConvert.SerializeObject(trans));
         totalBalance += trans.Amount;
         if (trans.Type == "Income")
         {
@@ -20,6 +22,14 @@
         {
             totalExpense += trans.Amount;
         }
+    }
+
+    List<decimal> percentages = new();
+    List<string> labels = new();
+    foreach (var charts in ViewBag.ChartSpending)
+    {
+        percentages.Add(Math.Round(charts.Amount * 100 / charts.TotalAmount, 2));
+        labels.Add(charts.Category);
     }
 }
 
@@ -36,25 +46,25 @@
         margin-bottom: 20px;
     }
 
-    .header .logo {
-        color: #fff;
-        font-size: 1.5em;
-        font-weight: bold;
-    }
+        .header .logo {
+            color: #fff;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
 
-    .header .actions button {
-        margin-left: 10px;
-        padding: 8px 16px;
-        background-color: #3498DB;
-        color: #FFF;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
+        .header .actions button {
+            margin-left: 10px;
+            padding: 8px 16px;
+            background-color: #3498DB;
+            color: #FFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
 
-    .header .actions .button-add {
-        background-color: #2ECC71;
-    }
+        .header .actions .button-add {
+            background-color: #2ECC71;
+        }
 
     /* Balance Overview */
     .balance-overview {
@@ -67,14 +77,14 @@
         color: #333;
     }
 
-    .balance-overview > div {
-        flex: 1;
-        text-align: center;
-    }
+        .balance-overview > div {
+            flex: 1;
+            text-align: center;
+        }
 
-    .balance-overview h2, .balance-overview h3 {
-        margin-bottom: 10px;
-    }
+        .balance-overview h2, .balance-overview h3 {
+            margin-bottom: 10px;
+        }
 
     /* Transactions Table */
     .transactions {
@@ -84,29 +94,29 @@
         margin-bottom: 20px;
     }
 
-    .transactions h2 {
-        margin-bottom: 15px;
-    }
+        .transactions h2 {
+            margin-bottom: 15px;
+        }
 
-    .transactions table {
-        width: 100%;
-        border-collapse: collapse;
-    }
+        .transactions table {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-    .transactions th, .transactions td {
-        padding: 12px;
-        text-align: center;
-        border-bottom: 1px solid #CCC;
-    }
+        .transactions th, .transactions td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #CCC;
+        }
 
-    .transactions th {
-        background-color: #34495E;
-        color: #FFF;
-    }
+        .transactions th {
+            background-color: #34495E;
+            color: #FFF;
+        }
 
-    .transactions td {
-        background-color: #FFF;
-    }
+        .transactions td {
+            background-color: #FFF;
+        }
 
     /* Spending Chart */
     .spending-chart {
@@ -125,24 +135,9 @@
         margin-bottom: 20px;
     }
 
-    .budget-goals .goal {
-        margin-bottom: 15px;
-    }
-
-    /* .budget-goals .progress-bar {
-                    background-color: #EEE;
-                    border-radius: 5px;
-                    height: 10px;
-                    width: 100%;
-                    margin-top: 8px;
-                    overflow: hidden;
-                } */
-
-    /* .budget-goals .progress {
-                    background-color: #3498DB;
-                    height: 100%;
-                    border-radius: 5px 0 0 5px;
-                } */
+        .budget-goals .goal {
+            margin-bottom: 15px;
+        }
 
     /* Upcoming Bills */
     .upcoming-bills {
@@ -152,15 +147,15 @@
         margin-bottom: 20px;
     }
 
-    .upcoming-bills ul {
-        list-style-type: none;
-    }
+        .upcoming-bills ul {
+            list-style-type: none;
+        }
 
-    .upcoming-bills li {
-        padding: 8px 0;
-        border-bottom: 1px solid #CCC;
-        color: #333;
-    }
+        .upcoming-bills li {
+            padding: 8px 0;
+            border-bottom: 1px solid #CCC;
+            color: #333;
+        }
 </style>
 
 <!-- Header Section -->
@@ -240,7 +235,7 @@
     <div id="pie-chart">
         <!-- Pie chart placeholder -->
         <!-- Use a JavaScript library like Chart.js to populate this section with actual data -->
-        <p>Pie chart goes here.</p>
+        @* <p>Pie chart goes here.</p> *@
     </div>
 </section>
 
@@ -289,6 +284,32 @@
 
 @section Scripts {
     <script>
+        let optionsSpendingBreakdown = {
+            series: @Html.Raw(Json.Serialize(percentages)),
+            labels: @Html.Raw(Json.Serialize(labels)),
+            // colors: ["#435ebe", "#55c6e8"],
+            chart: {
+                type: "donut",
+                width: "100%",
+                height: "350px",
+            },
+            legend: {
+                position: "bottom",
+            },
+            plotOptions: {
+                pie: {
+                    donut: {
+                        size: "30%",
+                    },
+                },
+            },
+        }
+
+        var chartSpendingBreakdown = new ApexCharts(
+            document.getElementById("pie-chart"),
+            optionsSpendingBreakdown
+        )
+
         $(document).ready(() => {
             $(".button-add").click((e) => {
                 e.preventDefault()
@@ -301,6 +322,8 @@
                 $("#staticModalBody").html(spinner)
                 $("#staticModalBody").load("/BudgetPlan/Create")
             })
+
+            chartSpendingBreakdown.render()
         })
     </script>
 }

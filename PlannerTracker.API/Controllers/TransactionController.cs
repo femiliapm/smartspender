@@ -69,5 +69,31 @@ namespace PlannerTracker.API.Controllers
                 return StatusCode(500, err);
             }
         }
+
+        [HttpGet("[action]")]
+        public async Task<ActionResult> Category(string? by)
+        {
+            try
+            {
+                VMResponse<List<VMTransactionCategory>> response = await Task.Run(() => transaction.FetchExpenseByCategory());
+                return StatusCode((int)response.StatusCode, response);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error at TransactionController.Category: " + ex.Message);
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine("InnerException: " + ex.InnerException.Message);
+                }
+
+                VMError err = new()
+                {
+                    error = ex.Message,
+                    error_description = ex.Source
+                };
+
+                return StatusCode(500, err);
+            }
+        }
     }
 }

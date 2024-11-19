@@ -27,10 +27,12 @@ namespace PlannerTracker.web.Controllers
 
             VMResponse<List<VMTransaction>>? resTrans = await transaction.FetchAll(auth.Token ?? string.Empty, string.Empty);
             VMResponse<List<VMBudgetPlan>>? resBudget = await budgetPlan.Fetch(auth.Token ?? string.Empty, string.Empty);
+            VMResponse<List<VMTransactionCategory>>? resExpense = await transaction.FetchByCategory(auth.Token ?? string.Empty);
 
             ViewData["Title"] = "Dashboard";
             ViewBag.Transactions = resTrans?.Data;
             ViewBag.Budgets = resBudget?.Data;
+            ViewBag.ChartSpending = resExpense?.Data;
 
             return View();
         }

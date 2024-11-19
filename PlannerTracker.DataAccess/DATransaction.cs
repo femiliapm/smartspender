@@ -215,5 +215,46 @@ namespace PlannerTracker.DataAccess
 
             return response;
         }
+
+        public VMResponse<List<VMTransactionCategory>> FetchExpenseByCategory()
+        {
+            VMResponse<List<VMTransactionCategory>> response = new();
+
+            try
+            {
+                List<VMTransactionCategory> data = new();
+
+                List<VMTransactionCategory> dataExpense = (
+                        from e in db.Expenses
+                        where e.IsDelete == false
+                        join bp in db.BudgetPlans on e.BudgetPlanId equals bp.Id
+                        join c in db.Categories on e.CategoryId equals c.Id
+                        group e by new { c.Id, c.CategoryName } into grouped
+                        select new VMTransactionCategory()
+                        {
+                            Amount = grouped.Sum(a => a.Amount),
+                            Category = grouped.Key.CategoryName,
+                            Id = grouped.Key.Id,
+                            Type = "Expense",
+                        }
+                    ).ToList();
+
+                data.AddRange(dataExpense);
+
+                decimal totalEx = 0;
+                data.ForEach(d => totalEx += d.Amount);
+                data.ForEach(d => d.TotalAmount = totalEx);
+
+                response.Data = data;
+                response.StatusCode = HttpStatusCode.OK;
+                response.Message = "Successfully fetched!";
+            }
+            catch (Exception ex)
+            {
+                response.Message = $"{response.StatusCode} - {ex.Message}";
+            }
+
+            return response;
+        }
     }
 }
