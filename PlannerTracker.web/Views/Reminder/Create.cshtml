@@ -1,0 +1,32 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = null;
+}
+
+<div class="card m-0">
+    <div class="card-body">
+        <form id="addTrans">
+            <div class="mb-3">
+                <label for="date" class="form-label">Due Date<span class="text-danger">*</span></label>
+                <input type="date" class="form-control" id="date" name="Date">
+            </div>
+            <div class="mb-3">
+                <label for="Title" class="form-label">Title<span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="Title" required name="Title">
+            </div>
+        </form>
+    </div>
+
+    <div class="card-footer d-flex justify-content-evenly">
+        <button class="btn btn-outline-primary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary" id="btnSave">Save</button>
+    </div>
+</div>
+
+<script>
+    $(document).ready(() => {
+        $("#staticModalLabel").text("@ViewBag.Title")
+    })
+</script>

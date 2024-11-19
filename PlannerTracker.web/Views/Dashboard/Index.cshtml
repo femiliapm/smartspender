@@ -137,23 +137,54 @@
             margin-bottom: 15px;
         }
 
-    /* Upcoming Bills */
-    .upcoming-bills {
-        background-color: #ECF0F1;
-        padding: 20px;
-        border-radius: 8px;
-        margin-bottom: 20px;
+    /* Reminders */
+    .reminders-section {
+        background-color: #f9f9f9;
+        /* padding: 20px; */
+        border-radius: 10px;
     }
 
-        .upcoming-bills ul {
-            list-style-type: none;
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .reminder-card {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        transition: transform 0.2s ease;
+    }
+
+        .reminder-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .upcoming-bills li {
-            padding: 8px 0;
-            border-bottom: 1px solid #CCC;
-            color: #333;
-        }
+    .reminder-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    .reminder-date {
+        font-size: 0.9rem;
+    }
+
+    .reminders-list {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
 </style>
 
 <!-- Header Section -->
@@ -270,15 +301,30 @@
     }
 </section>
 
-<!-- Upcoming Bills -->
-<section class="upcoming-bills">
-    <h2>Upcoming Bills</h2>
-    <ul>
-        <li>Water Bill - $30.00 - Due: 2024-11-02</li>
-        <li>Internet - $45.00 - Due: 2024-11-05</li>
-        <!-- Add more bills as needed -->
-    </ul>
+<!-- Reminders -->
+<section class="reminders-section mb-2">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="section-title">Reminders</h2>
+            <div>
+                <button id="btnAddReminder" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#staticModal">Add Reminder</button>
+                <button class="btn btn-secondary" onclick="location.href='/reminder'">View All</button>
+            </div>
+        </div>
+        <div class="reminders-list row gx-3 gy-4">
+            <!-- Reminder Card -->
+            <div class="col-md-4">
+                <div class="reminder-card p-3 shadow-sm rounded bg-light">
+                    <h4 class="reminder-title">Pay Electricity Bill</h4>
+                    <p class="reminder-date text-muted">Due Date: October 25, 2024</p>
+                    <button class="btn btn-success w-100 mt-2">Mark as Completed</button>
+                </div>
+            </div>
+            <!-- Repeat similar cards for other reminders -->
+        </div>
+    </div>
 </section>
+
 
 @section Scripts {
     <script>
@@ -319,6 +365,12 @@
                 e.preventDefault()
                 $("#staticModalBody").html(spinner)
                 $("#staticModalBody").load("/BudgetPlan/Create")
+            })
+
+            $("#btnAddReminder").click((e) => {
+                e.preventDefault()
+                $("#staticModalBody").html(spinner)
+                $("#staticModalBody").load("/Reminder/Create")
             })
 
             chartSpendingBreakdown.render()
