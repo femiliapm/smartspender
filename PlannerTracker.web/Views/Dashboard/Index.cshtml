@@ -313,14 +313,19 @@
         </div>
         <div class="reminders-list row gx-3 gy-4">
             <!-- Reminder Card -->
-            <div class="col-md-4">
-                <div class="reminder-card p-3 shadow-sm rounded bg-light">
-                    <h4 class="reminder-title">Pay Electricity Bill</h4>
-                    <p class="reminder-date text-muted">Due Date: October 25, 2024</p>
-                    <button class="btn btn-success w-100 mt-2">Mark as Completed</button>
-                </div>
-            </div>
-            <!-- Repeat similar cards for other reminders -->
+            @if(ViewBag.Reminders != null)
+            {
+                @foreach(var reminder in ViewBag.Reminders)
+                {
+                    <div class="col-md-4">
+                        <div class="reminder-card p-3 shadow-sm rounded bg-light">
+                            <h4 class="reminder-title">@reminder.Title</h4>
+                            <p class="reminder-date text-muted">Due Date: @reminder.ReminderDate.ToString("D")</p>
+                            <button class="btn btn-success w-100 mt-2" @(reminder.IsCompleted ? "disabled" : "")>Mark as Completed</button>
+                        </div>
+                    </div>
+                }
+            }
         </div>
     </div>
 </section>

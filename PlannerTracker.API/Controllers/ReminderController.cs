@@ -19,11 +19,11 @@ namespace PlannerTracker.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> Fetch()
+        public async Task<ActionResult> Fetch([FromQuery] VMReminderFilter? filter)
         {
             try
             {
-                VMResponse<List<VMReminder>> response = await Task.Run(() => reminder.FetchAll());
+                VMResponse<List<VMReminder>> response = await Task.Run(() => reminder.FetchAll(filter));
                 return StatusCode((int)response.StatusCode, response);
             }
             catch (Exception ex)

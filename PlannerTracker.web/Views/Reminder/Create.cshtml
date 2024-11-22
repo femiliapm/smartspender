@@ -7,10 +7,10 @@
 
 <div class="card m-0">
     <div class="card-body">
-        <form id="addTrans">
+        <form id="addReminder">
             <div class="mb-3">
                 <label for="date" class="form-label">Due Date<span class="text-danger">*</span></label>
-                <input type="date" class="form-control" id="date" name="Date">
+                <input type="date" class="form-control" id="date" name="ReminderDate">
             </div>
             <div class="mb-3">
                 <label for="Title" class="form-label">Title<span class="text-danger">*</span></label>
@@ -28,5 +28,54 @@
 <script>
     $(document).ready(() => {
         $("#staticModalLabel").text("@ViewBag.Title")
+
+        $("#addReminder").validate({
+            rules: {
+                ReminderDate: {
+                    required: true,
+                },
+                Title: "required"
+            },
+            messages: {
+                ReminderDate: {
+                    required: "Due date is required!"
+                },
+                Title: {
+                    required: "Title is required!"
+                },
+            },
+            errorPlacement: function (error, element) {
+                error.addClass("text-danger")
+                error.insertAfter(element);
+            }
+        })
+
+        $("#btnSave").click(function (e) {
+            e.preventDefault()
+            if ($("#addReminder").valid()) {
+
+                $.ajax({
+                    url: "/Reminder/AddReminder",
+                    type: "post",
+                    data: $("#addReminder").serialize(),
+                    dataType: "json",
+                    beforeSend: () => { },
+                    success: function (res) {
+                        if (res.statusCode == 200 || res.statusCode == 201) {
+                            toastr.success(res.message)
+                            setTimeout(function () {
+                                location.reload();
+                            }, 1500);
+                        } else {
+                            toastr.error(res.message)
+                        }
+                    },
+                    error: function (errRes) {
+                        console.error(errRes)
+                        debugger
+                    }
+                })
+            }
+        })
     })
 </script>

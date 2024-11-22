@@ -14,7 +14,7 @@ namespace PlannerTracker.DataAccess
             this.db = _db;
         }
 
-        public VMResponse<List<VMReminder>> FetchAll()
+        public VMResponse<List<VMReminder>> FetchAll(VMReminderFilter? filter)
         {
             VMResponse<List<VMReminder>> response = new();
 
@@ -39,7 +39,10 @@ namespace PlannerTracker.DataAccess
 
                     List<VMReminder> data = (
                             from r in db.Reminders
-                            where r.IsDelete == false
+                            where r.IsDelete == false && (
+                                filter != null && filter.IsCompleted != null ? r.IsCompleted == filter.IsCompleted : true) && (
+                                filter != null && filter.DateFrom != null ? r.ReminderDate >= filter.DateFrom : true) && (
+                                filter != null && filter.DateTo != null ? r.ReminderDate <= filter.DateTo : true)
                             select new VMReminder(r)
                         ).ToList();
 
