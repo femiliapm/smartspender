@@ -92,9 +92,9 @@ namespace PlannerTracker.DataAccess
                     dbTran.Rollback();
                     response.Message = $"{response.StatusCode} - {ex.Message}";
                 }
-
-                return response;
             }
+
+            return response;
         }
     }
 }
