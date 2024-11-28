@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
+using SmartSpender.ViewModel;
 
 namespace SmartSpender.DataModel
 {
@@ -28,6 +26,11 @@ namespace SmartSpender.DataModel
         public virtual DbSet<User> Users { get; set; } = null!;
         public virtual DbSet<UserRole> UserRoles { get; set; } = null!;
 
+        // custom dbset
+        public virtual DbSet<VMBudgetIncome> BudgetIncomes { get; set; }
+        public virtual DbSet<VMBudgetExpense> BudgetExpenses { get; set; }
+
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -39,6 +42,10 @@ namespace SmartSpender.DataModel
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // custom vm response
+            modelBuilder.Entity<VMBudgetIncome>().HasNoKey();
+            modelBuilder.Entity<VMBudgetExpense>().HasNoKey();
+
             modelBuilder.Entity<BudgetPlan>(entity =>
             {
                 entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
