@@ -90,18 +90,28 @@ namespace SmartSpender.DataAccess
 
                 // Native SQL queries
                 var incomeData = await _db.Set<VMBudgetIncome>()
-                    .FromSqlRaw("SELECT budget_plan_id AS BudgetPlanId, COALESCE(SUM(amount), 0) AS TotalIncome FROM incomes GROUP BY budget_plan_id")
+                    .FromSqlRaw("SELECT " +
+                    "budget_plan_id AS BudgetPlanId, " +
+                    "COALESCE(SUM(amount), 0) AS TotalIncome " +
+                    "FROM incomes " +
+                    "GROUP BY budget_plan_id")
                     .ToListAsync();
 
                 var expenseData = await _db.Set<VMBudgetExpense>()
-                    .FromSqlRaw("SELECT budget_plan_id AS BudgetPlanId, COALESCE(SUM(amount), 0) AS TotalExpense FROM expenses GROUP BY budget_plan_id")
+                    .FromSqlRaw("SELECT " +
+                    "budget_plan_id AS BudgetPlanId, " +
+                    "COALESCE(SUM(amount), 0) AS TotalExpense " +
+                    "FROM expenses " +
+                    "GROUP BY budget_plan_id")
                     .ToListAsync();
 
                 // Map to VMBudgetPlan
                 List<VMBudgetPlan> data = budgetPlans.Select(bp =>
                 {
-                    var totalIncome = incomeData.FirstOrDefault(i => i.BudgetPlanId == bp.Id)?.TotalIncome ?? 0;
-                    var totalExpense = expenseData.FirstOrDefault(e => e.BudgetPlanId == bp.Id)?.TotalExpense ?? 0;
+                    var totalIncome = incomeData.FirstOrDefault(i =>
+                        i.BudgetPlanId == bp.Id)?.TotalIncome ?? 0;
+                    var totalExpense = expenseData.FirstOrDefault(e =>
+                        e.BudgetPlanId == bp.Id)?.TotalExpense ?? 0;
 
                     return new VMBudgetPlan()
                     {
@@ -179,25 +189,28 @@ namespace SmartSpender.DataAccess
 
             try
             {
-                BudgetPlan bp = await _db.BudgetPlans
+                BudgetPlan? bp = await _db.BudgetPlans
                     .FromSqlRaw(
                         "SELECT * FROM budget_plans " +
                         "WHERE id = {0}", id)
-                    .FirstOrDefaultAsync() ?? new();
+                    .FirstOrDefaultAsync();
 
-                response.Data = new VMBudgetPlan()
+                if (bp != null)
                 {
-                    CreatedBy = bp.CreatedBy,
-                    CreatedOn = bp.CreatedOn,
-                    EndDate = bp.EndDate,
-                    Id = bp.Id,
-                    ModifiedBy = bp.ModifiedBy,
-                    ModifiedOn = bp.ModifiedOn,
-                    PlanName = bp.PlanName,
-                    StartDate = bp.StartDate,
-                    TotalBudget = bp.TotalBudget,
-                    UserId = bp.UserId,
-                };
+                    response.Data = new VMBudgetPlan()
+                    {
+                        CreatedBy = bp.CreatedBy,
+                        CreatedOn = bp.CreatedOn,
+                        EndDate = bp.EndDate,
+                        Id = bp.Id,
+                        ModifiedBy = bp.ModifiedBy,
+                        ModifiedOn = bp.ModifiedOn,
+                        PlanName = bp.PlanName,
+                        StartDate = bp.StartDate,
+                        TotalBudget = bp.TotalBudget,
+                        UserId = bp.UserId,
+                    };
+                }
 
                 response.StatusCode = HttpStatusCode.OK;
                 response.Message = "Successfully fetched!";
@@ -270,7 +283,9 @@ namespace SmartSpender.DataAccess
                 {
                     var result = await _db.Database
                         .ExecuteSqlRawAsync(
-                            "INSERT INTO budget_plans (created_by, end_date, plan_name, start_date, total_budget, user_id) " +
+                            "INSERT INTO budget_plans " +
+                            "(created_by, end_date, plan_name, " +
+                            "start_date, total_budget, user_id) " +
                             "VALUES ({0}, {1}, {2}, {3}, {4}, {5})",
                             req.ModifiedBy!,
                             req.EndDate!,
