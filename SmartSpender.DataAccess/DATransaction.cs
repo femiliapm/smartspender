@@ -151,7 +151,9 @@ namespace SmartSpender.DataAccess
                     if (req.Type.ToUpper() == "INCOME")
                     {
                         Income? income = _db.Incomes
-                            .FromSqlRaw("INSERT INTO incomes (amount, budget_plan_id, category_id, created_by, income_date, source) " +
+                            .FromSqlRaw("INSERT INTO incomes " +
+                            "(amount, budget_plan_id, category_id, " +
+                            "created_by, income_date, source) " +
                             "OUTPUT INSERTED.* " +
                             "VALUES ({0}, {1}, {2}, {3}, {4}, {5})",
                             req.Amount,
@@ -177,7 +179,8 @@ namespace SmartSpender.DataAccess
                                 if (tag == null)
                                 {
                                     tag = _db.Tags
-                                        .FromSqlRaw("INSERT INTO tags (created_by, created_on, tag_name) " +
+                                        .FromSqlRaw("INSERT INTO tags " +
+                                        "(created_by, created_on, tag_name) " +
                                         "OUTPUT INSERTED.* " +
                                         "VALUES ({0}, {1}, {2})",
                                         req.ModifiedBy!,

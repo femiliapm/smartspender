@@ -75,7 +75,8 @@ namespace SmartSpender.API.Controllers
         {
             try
             {
-                VMResponse<List<VMTransactionCategory>> response = await Task.Run(() => transaction.FetchExpenseByCategory());
+                VMResponse<List<VMTransactionCategory>> response = await Task.Run(() =>
+                    transaction.FetchExpenseByCategory());
                 return StatusCode((int)response.StatusCode, response);
             }
             catch (Exception ex)
