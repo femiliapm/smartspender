@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartSpender.DataModel", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartSpender.ViewModel", "SmartSpender.ViewModel\SmartSpender.ViewModel.csproj", "{A6F814FC-AD6D-4943-8BDA-E5D62126DBFD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartSpender.web", "SmartSpender.web\SmartSpender.web.csproj", "{F8542D3C-CE90-48DB-B95F-9B59F1174D26}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{A6F814FC-AD6D-4943-8BDA-E5D62126DBFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6F814FC-AD6D-4943-8BDA-E5D62126DBFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6F814FC-AD6D-4943-8BDA-E5D62126DBFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8542D3C-CE90-48DB-B95F-9B59F1174D26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8542D3C-CE90-48DB-B95F-9B59F1174D26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8542D3C-CE90-48DB-B95F-9B59F1174D26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8542D3C-CE90-48DB-B95F-9B59F1174D26}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

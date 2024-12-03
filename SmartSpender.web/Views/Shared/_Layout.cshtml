@@ -1,0 +1,88 @@
+﻿@using Newtonsoft.Json;
+
+@{
+    // string? dataStr = Context.Session.GetString("auth");
+    string? dataStr = string.Empty;
+    VMAuth? data = dataStr != null ? JsonConvert.DeserializeObject<VMAuth>(dataStr) : new();
+    Console.WriteLine("dataStr:" + dataStr);
+    Console.WriteLine("data?.Token:" + data?.Token);
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - SmartSpender</title>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    @* <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script> *@
+    <script src="~/lib/toastr.js/toastr.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- Need: Apexcharts -->
+    <script src="~/lib/mazer/assets/extensions/apexcharts/apexcharts.min.js"></script>
+    @* <script src="~/lib/mazer/assets/static/js/pages/dashboard.js"></script> *@
+
+    @* <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" /> *@
+    <link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" />
+    <link href="~/lib/toastr.js/toastr.min.css" rel="stylesheet" />
+    @* <link rel="stylesheet" href="~/css/base.css" asp-append-version="true" /> *@
+    <link rel="stylesheet" href="~/PlannerTracker.web.styles.css" asp-append-version="true" />
+
+    @if (data != null && data.Role == "Admin")
+    {
+        <link rel="stylesheet" href="~/css/site-admin.css" asp-append-version="true" />
+    }
+
+    <link rel="shortcut icon" href="~/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="~/lib/mazer/assets/compiled/css/app.css">
+    @* <link rel="stylesheet" href="~/lib/mazer/assets/compiled/css/app-dark.css"> *@
+    <link rel="stylesheet" href="~/lib/mazer/assets/compiled/css/iconly.css">
+</head>
+
+<body>
+    <script src="~/lib/mazer/assets/static/js/initTheme.js"></script>
+
+    <div id="app">
+        <partial name="_Modal" />
+
+        <div id="main" class="layout-horizontal">
+            <partial name="_Header" />
+
+            <div class="content-wrapper container">
+                <main role="main">
+                    @await RenderSectionAsync("TitlePage", required: false)
+                    @await RenderSectionAsync("Breadcrumbs", required: false)
+                    @RenderBody()
+                </main>
+            </div>
+
+            <partial name="_Footer" />
+        </div>
+    </div>
+
+    <script>
+        let spinner = `
+                <div class="d-flex justify-content-center">
+                    <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            `
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+    @* <script src="~/lib/mazer/assets/static/js/components/dark.js"></script> *@
+    <script src="~/lib/mazer/assets/static/js/pages/horizontal-layout.js"></script>
+    <script src="~/lib/mazer/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+
+    <script src="~/lib/mazer/assets/compiled/js/app.js"></script>
+
+
+</body>
+</html>

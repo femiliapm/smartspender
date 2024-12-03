@@ -1,0 +1,51 @@
+/* FOR ADMIN PAGE */
+.admin-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.admin-container {
+    /*  padding: 2rem;*/
+}
+
+.menu {
+    width: 22%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+    cursor: pointer;
+}
+
+    /* Hover Effect */
+    .menu:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .menu i {
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .menu h3 {
+        font-size: 1.1rem;
+    }
+
+.category-header {
+    font-size: 1.3rem;
+    margin: 1rem 0;
+    color: #333;
+    font-weight: 600;
+}
+
+/* Adjust spacing for responsiveness */
+@media (max-width: 1200px) {
+    .menu {
+        width: 45%;
+    }
+}
+
+@media (max-width: 768px) {
+    .menu {
+        width: 100%;
+    }
+}
