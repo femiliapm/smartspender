@@ -1,0 +1,204 @@
+﻿@{
+    Layout = "_AuthLayout";
+    ViewBag.Title = "Login";
+}
+
+<style>
+    .text-member {
+        float: right;
+    }
+
+    .auth-wrapper {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 100%;
+        width: 100%;
+    }
+
+    .auth-wrapper .auth-content {
+        width: 70%;
+        margin: 0 auto;
+    }
+
+    .divider {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        color: #666;
+        font-size: 14px;
+        position: relative;
+    }
+
+    .divider::before,
+    .divider::after {
+        content: '';
+        position: absolute;
+        height: 1px;
+        background: #ccc;
+        top: 50%;
+        width: 100%;
+    }
+
+    .divider::before {
+        left: 0;
+    }
+
+    .divider::after {
+        right: 0;
+    }
+
+    .divider span {
+        background-color: #fff;
+        /* Matches the container background */
+        padding: 0 10px;
+        position: relative;
+        z-index: 1;
+    }
+</style>
+
+<p class="text-member">Not a member? <a href="" id="toggle-auth">Sign up now</a></p>
+
+<div class="auth-wrapper">
+    <div class="auth-content" id="login-content">
+        <h3 class="fw-bolder mb-3">Sign in to SmartSpender</h3>
+        <button class="btn btn-primary w-100">
+            <i class="bi bi-google me-2"></i>
+            Sign in with Google
+        </button>
+        <div class="divider">
+            <span>Or</span>
+        </div>
+        <form class="form form-vertical">
+            <div class="form-body">
+                <div class="row">
+                    @* <div class="col-12">
+                        <div class="form-group">
+                            <label for="full-name-vertical">Full Name</label>
+                            <input type="text" id="full-name-vertical" class="form-control" name="fname"
+                                placeholder="full Name">
+                        </div>
+                    </div> *@
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="email-id-vertical">Email</label>
+                            <input type="email" id="email-id-vertical" class="form-control" name="email-id"
+                                placeholder="Email">
+                        </div>
+                    </div>
+                    @* <div class="col-12">
+                        <div class="form-group">
+                            <label for="username-vertical">Username</label>
+                            <input type="text" id="username-vertical" class="form-control" name="contact"
+                                placeholder="Username">
+                        </div>
+                    </div> *@
+                    <div class="col-12">
+                        <div class="form-group">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <label for="password-vertical">Password</label>
+                                <label>
+                                    <a href="#">Forgot password?</a>
+                                </label>
+                            </div>
+                            <input type="password" id="password-vertical" class="form-control" name="contact"
+                                placeholder="Password">
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class='form-check'>
+                            <div class="checkbox">
+                                <input type="checkbox" id="checkbox3" class='form-check-input' checked>
+                                <label for="checkbox3">Remember Me</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
+                        @* <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button> *@
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="auth-content d-none" id="register-content">
+        <h3 class="fw-bolder mb-3">Register to SmartSpender</h3>
+        <button class="btn btn-primary w-100">
+            <i class="bi bi-google me-2"></i>
+            Register with Google
+        </button>
+        <div class="divider">
+            <span>Or</span>
+        </div>
+        <form class="form form-vertical">
+            <div class="form-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="full-name-vertical">Full Name</label>
+                            <input type="text" id="full-name-vertical" class="form-control" name="fname"
+                                placeholder="full Name">
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="email-id-vertical">Email</label>
+                            <input type="email" id="email-id-vertical" class="form-control" name="email-id"
+                                placeholder="Email">
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="username-vertical">Username</label>
+                            <input type="text" id="username-vertical" class="form-control" name="contact"
+                                placeholder="Username">
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="password-vertical">Password</label>
+                            <input type="password" id="password-vertical" class="form-control" name="contact"
+                                placeholder="Password">
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class='form-check'>
+                            <div class="checkbox">
+                                <input type="checkbox" id="checkbox3" class='form-check-input' checked>
+                                <label for="checkbox3">Remember Me</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
+                        @* <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button> *@
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(() => {
+            $("#toggle-auth").click(function (e) {
+                e.preventDefault()
+                console.log("toggle-auth");
+
+                $("#login-content").toggleClass("d-none")
+                $("#register-content").toggleClass("d-none")
+
+                if ($("#login-content").hasClass("d-none")) {
+                    console.log("if condition");
+                    $(".text-member")[0].innerHTML = "Already have an account? <a href='' id='toggle-auth'>Sign in now</a>"
+                } else {
+                    console.log("else condition");
+                    $(".text-member")[0].innerHTML = "Not a member? <a href='' id='toggle-auth'>Sign up now</a>"
+                }
+            })
+        })
+    </script>
+}

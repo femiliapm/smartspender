@@ -1,20 +1,11 @@
-﻿@using Newtonsoft.Json;
+﻿<!DOCTYPE html>
 
-@{
-    // string? dataStr = Context.Session.GetString("auth");
-    string? dataStr = string.Empty;
-    VMAuth? data = dataStr != null ? JsonConvert.DeserializeObject<VMAuth>(dataStr) : new();
-    Console.WriteLine("dataStr:" + dataStr);
-    Console.WriteLine("data?.Token:" + data?.Token);
-}
-
-<!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewData["Title"] - SmartSpender</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title</title>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
@@ -30,12 +21,8 @@
     <link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" />
     <link href="~/lib/toastr.js/toastr.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/base.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/base-layout-auth.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/PlannerTracker.web.styles.css" asp-append-version="true" />
-
-    @if (data != null && data.Role == "Admin")
-    {
-        <link rel="stylesheet" href="~/css/site-admin.css" asp-append-version="true" />
-    }
 
     <link rel="shortcut icon" href="~/favicon.ico" type="image/x-icon">
 
@@ -47,21 +34,33 @@
 <body>
     <script src="~/lib/mazer/assets/static/js/initTheme.js"></script>
 
-    <div id="app">
-        <partial name="_Modal" />
+    <div class="layout-wrapper d-flex">
+        <div class="left-wrapper">
+            <img src="~/img/auth-bg.jpg" alt="bg-auth">
 
-        <div id="main" class="layout-horizontal">
-            <partial name="_Header" />
+            <div class="left-content">
+                <div class="logo" style="font-weight: 800;">
+                    <a href="/" style="font-size: 1.7rem; color: #27ae60;">
+                        SmartSpender
+                    </a>
+                </div>
 
-            <div class="content-wrapper container">
-                <main role="main">
-                    @await RenderSectionAsync("TitlePage", required: false)
-                    @await RenderSectionAsync("Breadcrumbs", required: false)
-                    @RenderBody()
-                </main>
+                <div>
+                    <h1>Welcome to SmartSpender!</h1>
+
+                    <p style="color: #f8e8e8;">
+                        Photo by <a
+                            href="https://unsplash.com/@@rupixen?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash"
+                            class="fw-bold">rupixen</a>
+                        on <a
+                            href="https://unsplash.com/photos/gray-pen-beside-coins-on-indian-rupee-banknotes-pbgYcq3_Zx0?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash"
+                            class="fw-bold">Unsplash</a>
+                    </p>
+                </div>
             </div>
-
-            <partial name="_Footer" />
+        </div>
+        <div class="right-wrapper">
+            @RenderBody()
         </div>
     </div>
 
@@ -83,6 +82,6 @@
 
     <script src="~/lib/mazer/assets/compiled/js/app.js"></script>
 
-
 </body>
+
 </html>
