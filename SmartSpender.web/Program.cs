@@ -9,6 +9,11 @@ namespace SmartSpender.web
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(120);
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -25,6 +30,8 @@ namespace SmartSpender.web
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.MapControllerRoute(
                 name: "default",

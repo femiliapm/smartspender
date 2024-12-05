@@ -16,10 +16,10 @@
         width: 100%;
     }
 
-    .auth-wrapper .auth-content {
-        width: 70%;
-        margin: 0 auto;
-    }
+        .auth-wrapper .auth-content {
+            width: 70%;
+            margin: 0 auto;
+        }
 
     .divider {
         display: flex;
@@ -31,31 +31,31 @@
         position: relative;
     }
 
-    .divider::before,
-    .divider::after {
-        content: '';
-        position: absolute;
-        height: 1px;
-        background: #ccc;
-        top: 50%;
-        width: 100%;
-    }
+        .divider::before,
+        .divider::after {
+            content: '';
+            position: absolute;
+            height: 1px;
+            background: #ccc;
+            top: 50%;
+            width: 100%;
+        }
 
-    .divider::before {
-        left: 0;
-    }
+        .divider::before {
+            left: 0;
+        }
 
-    .divider::after {
-        right: 0;
-    }
+        .divider::after {
+            right: 0;
+        }
 
-    .divider span {
-        background-color: #fff;
-        /* Matches the container background */
-        padding: 0 10px;
-        position: relative;
-        z-index: 1;
-    }
+        .divider span {
+            background-color: #fff;
+            /* Matches the container background */
+            padding: 0 10px;
+            position: relative;
+            z-index: 1;
+        }
 </style>
 
 <p class="text-member">Not a member? <a href="" id="toggle-auth">Sign up now</a></p>
@@ -70,7 +70,7 @@
         <div class="divider">
             <span>Or</span>
         </div>
-        <form class="form form-vertical">
+        <form class="form form-vertical" id="form-login">
             <div class="form-body">
                 <div class="row">
                     @* <div class="col-12">
@@ -82,9 +82,9 @@
                     </div> *@
                     <div class="col-12">
                         <div class="form-group">
-                            <label for="email-id-vertical">Email</label>
-                            <input type="email" id="email-id-vertical" class="form-control" name="email-id"
-                                placeholder="Email">
+                            <label for="Email-vertical">Email<span class="text-danger">*</span></label>
+                            <input type="email" id="Email-vertical" class="form-control" name="Email"
+                                   placeholder="Email">
                         </div>
                     </div>
                     @* <div class="col-12">
@@ -97,13 +97,13 @@
                     <div class="col-12">
                         <div class="form-group">
                             <div class="d-flex justify-content-between align-items-center">
-                                <label for="password-vertical">Password</label>
+                                <label for="password-vertical">Password<span class="text-danger">*</span></label>
                                 <label>
                                     <a href="#">Forgot password?</a>
                                 </label>
                             </div>
-                            <input type="password" id="password-vertical" class="form-control" name="contact"
-                                placeholder="Password">
+                            <input type="password" id="password-vertical" class="form-control" name="Password"
+                                   placeholder="Password">
                         </div>
                     </div>
                     <div class="col-12">
@@ -115,7 +115,7 @@
                         </div>
                     </div>
                     <div class="col-12 d-flex justify-content-end">
-                        <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
+                        <button type="submit" class="btn btn-primary me-1 mb-1" id="btn-login">Submit</button>
                         @* <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button> *@
                     </div>
                 </div>
@@ -132,47 +132,46 @@
         <div class="divider">
             <span>Or</span>
         </div>
-        <form class="form form-vertical">
+        <form class="form form-vertical" id="form-register">
             <div class="form-body">
                 <div class="row">
                     <div class="col-12">
                         <div class="form-group">
-                            <label for="full-name-vertical">Full Name</label>
-                            <input type="text" id="full-name-vertical" class="form-control" name="fname"
-                                placeholder="full Name">
+                            <label for="full-name-vertical">Full Name<span class="text-danger">*</span></label>
+                            <input type="text" id="full-name-vertical" class="form-control" name="FullName"
+                                   placeholder="Full Name">
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="form-group">
-                            <label for="email-id-vertical">Email</label>
-                            <input type="email" id="email-id-vertical" class="form-control" name="email-id"
-                                placeholder="Email">
+                            <label for="Email-vertical">Email<span class="text-danger">*</span></label>
+                            <input type="email" id="Email-vertical" class="form-control" name="Email"
+                                   placeholder="Email">
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="form-group">
-                            <label for="username-vertical">Username</label>
-                            <input type="text" id="username-vertical" class="form-control" name="contact"
-                                placeholder="Username">
+                            <label for="username-vertical">Username<span class="text-danger">*</span></label>
+                            <input type="text" id="username-vertical" class="form-control" name="Username"
+                                   placeholder="Username">
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="form-group">
-                            <label for="password-vertical">Password</label>
-                            <input type="password" id="password-vertical" class="form-control" name="contact"
-                                placeholder="Password">
+                            <label for="password-vertical">Password<span class="text-danger">*</span></label>
+                            <input type="password" id="password" class="form-control" name="Password"
+                                   placeholder="Password">
                         </div>
                     </div>
                     <div class="col-12">
-                        <div class='form-check'>
-                            <div class="checkbox">
-                                <input type="checkbox" id="checkbox3" class='form-check-input' checked>
-                                <label for="checkbox3">Remember Me</label>
-                            </div>
+                        <div class="form-group">
+                            <label for="confirm_password">Password Confirmation<span class="text-danger">*</span></label>
+                            <input type="password" id="confirm_password" class="form-control" name="confirm_password"
+                                   placeholder="Password Confirmation">
                         </div>
                     </div>
                     <div class="col-12 d-flex justify-content-end">
-                        <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
+                        <button type="submit" class="btn btn-primary me-1 mb-1" id="btn-register">Submit</button>
                         @* <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button> *@
                     </div>
                 </div>
@@ -192,11 +191,147 @@
                 $("#register-content").toggleClass("d-none")
 
                 if ($("#login-content").hasClass("d-none")) {
-                    console.log("if condition");
                     $(".text-member")[0].innerHTML = "Already have an account? <a href='' id='toggle-auth'>Sign in now</a>"
+                    $("title").text("Register");
                 } else {
-                    console.log("else condition");
                     $(".text-member")[0].innerHTML = "Not a member? <a href='' id='toggle-auth'>Sign up now</a>"
+                    $("title").text("Login");
+                }
+            })
+
+            $("#form-login").validate({
+                rules: {
+                    Email: {
+                        required: true,
+                        email: true
+                    },
+                    Password: {
+                        required: true,
+                        // minlength: 8
+                    }
+                },
+                messages: {
+                    Email: {
+                        required: "Email wajib diisi!",
+                        email: "Format email salah!"
+                    },
+                    Password: {
+                        required: "Password wajib diisi!",
+                        // minlength: "Password minimal 8 karakter!"
+                    }
+                },
+                errorPlacement: function (error, element) {
+                    error.addClass("text-danger")
+                    error.insertAfter(element);
+                }
+            })
+
+            $("#btn-login").click((e) => {
+                e.preventDefault()
+                if ($("#form-login").valid()) {
+                    $.ajax({
+                        url: "/Auth/Login",
+                        type: "post",
+                        data: $("#form-login").serialize(),
+                        dataType: "json",
+                        beforeSend: () => { },
+                        success: function (res) {
+                            console.log(res)
+                            if (res.statusCode == 200) {
+                                toastr["success"](res.message)
+                                setTimeout(function () {
+                                    location.href = "/"
+                                }, 1500);
+                            } else {
+                                console.log(res.message)
+                                toastr["error"](res.message)
+                            }
+                        },
+                        error: function (errRes) {
+                            console.error(errRes)
+                            debugger
+                        }
+                    })
+                }
+            })
+
+            $.validator.addMethod("confirmPassword", function (value, element) {
+                let pass = $("#password").val()
+                return value === pass
+            }, "Konfirmasi password tidak sama!")
+
+            $("#form-register").validate({
+                rules: {
+                    Email: {
+                        required: true,
+                        email: true
+                    },
+                    Password: {
+                        required: true,
+                        minlength: 8
+                    },
+                    FullName: {
+                        required: true,
+                    },
+                    Username: {
+                        required: true,
+                    },
+                    confirm_password: {
+                        required: true,
+                        confirmPassword: true
+                    }
+                },
+                messages: {
+                    Email: {
+                        required: "Email wajib diisi!",
+                        email: "Format email salah!"
+                    },
+                    Password: {
+                        required: "Password wajib diisi!",
+                        minlength: "Password minimal 8 karakter!"
+                    },
+                    FullName: {
+                        required: "FullName wajib diisi!",
+                    },
+                    Username: {
+                        required: "Username wajib diisi!",
+                    },
+                    confirm_password: {
+                        required: "Konfirmasi password wajib diisi!",
+                    }
+                },
+                errorPlacement: function (error, element) {
+                    error.addClass("text-danger")
+                    error.insertAfter(element);
+                }
+            })
+
+            $("#btn-register").click((e) => {
+                e.preventDefault()
+                if ($("#form-register").valid()) {
+                    $.ajax({
+                        url: "/Auth/Register",
+                        type: "post",
+                        data: $("#form-register").serialize(),
+                        dataType: "json",
+                        beforeSend: () => { },
+                        success: function (res) {
+                            console.log(res)
+                            if (res.statusCode == 201) {
+                                toastr["success"](res.message)
+                                setTimeout(function () {
+                                    location.reload()
+                                }, 1500);
+                            } else {
+                                console.log(res.message)
+                                toastr["error"](res.message)
+                            }
+                        },
+                        error: function (errRes) {
+                            console.error(errRes)
+                            debugger
+                        }
+                    })
                 }
             })
         })

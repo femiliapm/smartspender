@@ -6,8 +6,7 @@
 
 @{
     Layout = null;
-    // string? dataStr = Context.Session.GetString("auth");
-    string? dataStr = string.Empty;
+    string? dataStr = Context.Session.GetString("auth");
     VMAuth? data = dataStr != null ? JsonConvert.DeserializeObject<VMAuth>(dataStr) : new();
 }
 
@@ -157,6 +156,6 @@
 
     $(".btn-cta").click((e) => {
         e.preventDefault()
-        location.href = "/auth/register"
+        location.href = "/auth"
     })
 </script>

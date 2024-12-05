@@ -173,7 +173,7 @@ namespace SmartSpender.DataAccess
                             vUser.Role.Trim())
                             .AsEnumerable().FirstOrDefault();
                     }
-                    else
+                    else if (role == null)
                     {
                         response.StatusCode = HttpStatusCode.NotFound;
                         response.Message = $"Role {vUser.Role} is not found!";

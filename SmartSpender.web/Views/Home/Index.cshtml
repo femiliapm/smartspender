@@ -1,5 +1,9 @@
-﻿@{
+﻿@using Newtonsoft.Json;
+
+@{
     ViewData["Title"] = "Home";
+    string? authStr = Context.Session.GetString("auth");
+    VMAuth? auth = authStr != null ? JsonConvert.DeserializeObject<VMAuth?>(authStr) : null;
 }
 
 <style>
@@ -70,7 +74,7 @@
     <div class="hero-content">
         <h1>Manage Your Budget Easily with SmartSpender</h1>
         <p>Your financial planning made simple and effective. Track your spending, save smartly, and achieve your goals.</p>
-        <a href="/auth/register" class="cta-button">Get Started Now</a>
+        <a href="/auth" class="cta-button @(auth != null ? "d-none" : "")">Get Started Now</a>
     </div>
 </section>
 
@@ -191,5 +195,5 @@
 <section class="cta-section text-center text-white">
     <h2>Take Control of Your Finances Today</h2>
     <p class="mb-4">Join thousands of others who are managing their money better with SmartSpender.</p>
-    <a href="/auth/register" class="cta-button fw-bold">Sign Up Now</a>
+    <a href="/auth" class="cta-button fw-bold @(auth != null ? "d-none" : "")">Sign Up Now</a>
 </section>

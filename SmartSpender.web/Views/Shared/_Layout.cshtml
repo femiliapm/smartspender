@@ -1,8 +1,7 @@
 ﻿@using Newtonsoft.Json;
 
 @{
-    // string? dataStr = Context.Session.GetString("auth");
-    string? dataStr = string.Empty;
+    string? dataStr = Context.Session.GetString("auth");
     VMAuth? data = dataStr != null ? JsonConvert.DeserializeObject<VMAuth>(dataStr) : new();
     Console.WriteLine("dataStr:" + dataStr);
     Console.WriteLine("data?.Token:" + data?.Token);
