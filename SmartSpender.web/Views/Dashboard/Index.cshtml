@@ -1,0 +1,380 @@
+﻿@using System.Globalization
+
+@{
+    ViewData["Title"] = "Dashboard";
+    decimal totalBalance = 0;
+    decimal totalIncome = 0;
+    decimal totalExpense = 0;
+
+    // foreach (var trans in ViewBag.Transactions)
+    // {
+    //     totalBalance += trans.Amount;
+    //     if (trans.Type == "Income")
+    //     {
+    //         totalIncome += trans.Amount;
+    //     }
+    //     else if (trans.Type == "Expense")
+    //     {
+    //         totalExpense += trans.Amount;
+    //     }
+    // }
+
+    List<decimal> percentages = new();
+    List<string> labels = new();
+    // foreach (var charts in ViewBag.ChartSpending)
+    // {
+    //     percentages.Add(Math.Round(charts.Amount * 100 / charts.TotalAmount, 2));
+    //     labels.Add(charts.Category);
+    // }
+}
+
+<style>
+    /* Header */
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #2C3E50;
+        color: #FFF;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+        .header .logo {
+            color: #fff;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .header .actions button {
+            margin-left: 10px;
+            padding: 8px 16px;
+            background-color: #3498DB;
+            color: #FFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .header .actions .button-add {
+            background-color: #2ECC71;
+        }
+
+    /* Balance Overview */
+    .balance-overview {
+        display: flex;
+        justify-content: space-between;
+        background-color: #ECF0F1;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+        .balance-overview > div {
+            flex: 1;
+            text-align: center;
+        }
+
+        .balance-overview h2, .balance-overview h3 {
+            margin-bottom: 10px;
+        }
+
+    /* Transactions Table */
+    .transactions {
+        background-color: #ECF0F1;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+        .transactions h2 {
+            margin-bottom: 15px;
+        }
+
+        .transactions table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .transactions th, .transactions td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #CCC;
+        }
+
+        .transactions th {
+            background-color: #34495E;
+            color: #FFF;
+        }
+
+        .transactions td {
+            background-color: #FFF;
+        }
+
+    /* Spending Chart */
+    .spending-chart {
+        background-color: #ECF0F1;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    /* Budget Goals */
+    .budget-goals {
+        background-color: #ECF0F1;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+        .budget-goals .goal {
+            margin-bottom: 15px;
+        }
+
+    /* Reminders */
+    .reminders-section {
+        background-color: #f9f9f9;
+        /* padding: 20px; */
+        border-radius: 10px;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .reminder-card {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        transition: transform 0.2s ease;
+    }
+
+        .reminder-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+    .reminder-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    .reminder-date {
+        font-size: 0.9rem;
+    }
+
+    .reminders-list {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+</style>
+
+<!-- Header Section -->
+<header class="header">
+    <div class="logo">Dashboard</div>
+    <div class="actions">
+        <button class="button-add" data-bs-toggle="modal" data-bs-target="#staticModal">+ Add Transaction</button>
+    </div>
+</header>
+
+<!-- Balance Overview -->
+<section class="balance-overview">
+    <div class="balance">
+        <h2>Total Balance</h2>
+        <p>@totalBalance.ToString("C", new CultureInfo("id-ID"))</p>
+    </div>
+    <div class="income">
+        <h3>Income</h3>
+        <p>@totalIncome.ToString("C", new CultureInfo("id-ID"))</p>
+    </div>
+    <div class="expense">
+        <h3>Expenses</h3>
+        <p>@totalExpense.ToString("C", new CultureInfo("id-ID"))</p>
+    </div>
+</section>
+
+<!-- Recent Transactions -->
+<section class="transactions">
+    <div class="d-flex align-items-center justify-content-between">
+        <h2>Recent Transactions</h2>
+        <a class="fw-bold" href="/transaction">See all</a>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Budget Plan</th>
+                <th>Category</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (ViewBag.Transactions != null)
+            {
+                int max = (ViewBag.Transactions.Count > 5) ? 5 : ViewBag.Transactions.Count;
+                @for (int i = 0; i < max; i++)
+                {
+                    <tr>
+                        <td>@ViewBag.Transactions[i].Date.ToString("D")</td>
+                        <td>@ViewBag.Transactions[i].BudgetPlan</td>
+                        <td>@ViewBag.Transactions[i].Category</td>
+                        <td>
+                            <span class="badge @(ViewBag.Transactions[i].Type == "Income" ? "bg-success" : "bg-danger")">
+                                @ViewBag.Transactions[i].Type
+                            </span>
+                        </td>
+                        <td>@ViewBag.Transactions[i].Amount.ToString("C", new CultureInfo("id-ID"))</td>
+                        <td>@ViewBag.Transactions[i].Name</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="6" class="text-center">
+                        --No Data Transactions--
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>
+
+<!-- Spending Breakdown -->
+<section class="spending-chart">
+    <h2>Spending Breakdown</h2>
+    <div id="pie-chart">
+        <!-- Pie chart placeholder -->
+        <!-- Use a JavaScript library like Chart.js to populate this section with actual data -->
+        @* <p>Pie chart goes here.</p> *@
+    </div>
+</section>
+
+<!-- Budget Goals -->
+<section class="budget-goals">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex align-items-center">
+            <h2 class="m-0 me-3">Budget Goals</h2>
+            <a class="fw-bold" href="/budgetplan/settings">Settings</a>
+        </div>
+        <!-- Add Budget Plan Button -->
+        <div class="d-flex justify-content-end mb-3">
+            <button type="button" id="btnAddBudget" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticModal">
+                + Add Budget Plan
+            </button>
+        </div>
+    </div>
+
+    @if (ViewBag.Budgets != null)
+    {
+        @foreach (var budget in ViewBag.Budgets)
+        {
+            <div class="goal">
+                <h4>@budget.PlanName</h4>
+                <div class="progress progress-sm progress-primary mb-3">
+                    <div class="progress-bar" role="progressbar" style="width: @budget.Progress%; background-color: #3498DB;" aria-valuenow="@budget.Progress" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+
+                <p>@budget.Progress % of @budget.TotalBudget.ToString("C", new CultureInfo("id-ID")) goal</p>
+            </div>
+        }
+    }
+</section>
+
+<!-- Reminders -->
+<section class="reminders-section mb-2">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="section-title">Reminders</h2>
+            <div>
+                <button id="btnAddReminder" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#staticModal">Add Reminder</button>
+                <button class="btn btn-secondary" onclick="location.href='/reminder'">View All</button>
+            </div>
+        </div>
+        <div class="reminders-list row gx-3 gy-4">
+            <!-- Reminder Card -->
+            @if (ViewBag.Reminders != null)
+            {
+                @foreach (var reminder in ViewBag.Reminders)
+                {
+                    <div class="col-md-4">
+                        <div class="reminder-card p-3 shadow-sm rounded bg-light">
+                            <h4 class="reminder-title">@reminder.Title</h4>
+                            <p class="reminder-date text-muted">Due Date: @reminder.ReminderDate.ToString("D")</p>
+                            <button class="btn btn-success w-100 mt-2" @(reminder.IsCompleted ? "disabled" : "")>Mark as Completed</button>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        let optionsSpendingBreakdown = {
+            series: @Html.Raw(Json.Serialize(percentages)),
+            labels: @Html.Raw(Json.Serialize(labels)),
+            // colors: ["#435ebe", "#55c6e8"],
+            chart: {
+                type: "donut",
+                width: "100%",
+                height: "350px",
+            },
+            legend: {
+                position: "bottom",
+            },
+            plotOptions: {
+                pie: {
+                    donut: {
+                        size: "30%",
+                    },
+                },
+            },
+        }
+
+        var chartSpendingBreakdown = new ApexCharts(
+            document.getElementById("pie-chart"),
+            optionsSpendingBreakdown
+        )
+
+        $(document).ready(() => {
+            $(".button-add").click((e) => {
+                e.preventDefault()
+                $("#staticModalBody").html(spinner)
+                // $("#staticModalBody").load("/Transaction/Create")
+            })
+
+            $("#btnAddBudget").click((e) => {
+                e.preventDefault()
+                $("#staticModalBody").html(spinner)
+                // $("#staticModalBody").load("/BudgetPlan/Create")
+            })
+
+            $("#btnAddReminder").click((e) => {
+                e.preventDefault()
+                $("#staticModalBody").html(spinner)
+                // $("#staticModalBody").load("/Reminder/Create")
+            })
+
+            chartSpendingBreakdown.render()
+        })
+    </script>
+}
