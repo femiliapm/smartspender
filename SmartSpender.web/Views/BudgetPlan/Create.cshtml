@@ -1,0 +1,119 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = null;
+}
+
+<form class="form form-vertical" id="budgetForm">
+    <div class="form-body">
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label for="budgetName">Budget Name<span class="text-danger">*</span></label>
+                    <input type="text" id="budgetName" class="form-control"
+                           name="PlanName" placeholder="Budget Name">
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
+                    <label for="budgetAmount">Amount<span class="text-danger">*</span></label>
+                    <input type="number" id="budgetAmount" class="form-control"
+                           name="TotalBudget" placeholder="Amount">
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="startDate">Start Date<span class="text-danger">*</span></label>
+                            <input class="form-control" id="startDate" type="date" name="StartDate">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="endDate">End Date<span class="text-danger">*</span></label>
+                            <input class="form-control" id="endDate" type="date" name="EndDate">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary me-1 mb-1" id="btnSave">Submit</button>
+                <button data-bs-dismiss="modal"
+                        class="btn btn-light-secondary me-1 mb-1">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    $(document).ready(() => {
+        $("#staticModalLabel").text("@ViewBag.Title")
+
+        $("#budgetForm").validate({
+            rules: {
+                PlanName: {
+                    required: true
+                },
+                TotalBudget: "required",
+                StartDate: "required",
+                EndDate: "required",
+            },
+            messages: {
+                PlanName: {
+                    required: "Plan name is required!"
+                },
+                TotalBudget: {
+                    required: "Amount total budget is required!"
+                },
+                StartDate: {
+                    required: "Start date is required!"
+                },
+                EndDate: {
+                    required: "End date is required!"
+                },
+            },
+            errorPlacement: function (error, element) {
+                error.addClass("text-danger")
+                error.insertAfter(element);
+            }
+        })
+
+        $("#btnSave").click((e) => {
+            e.preventDefault()
+
+            if ($("#budgetForm").valid()) {
+                $.ajax({
+                    url: "/BudgetPlan/AddBudgetPlan",
+                    type: "post",
+                    data: $("#budgetForm").serialize(),
+                    dataType: "json",
+                    beforeSend: () => { },
+                    success: function (res) {
+                        if (res.statusCode == 200 || res.statusCode == 201) {
+                            $("#staticModal").modal("hide")
+                            toastr.success(res.message)
+                            setTimeout(function () {
+                                location.reload();
+                            }, 1500);
+                        } else {
+                            toastr.error(res.message)
+                        }
+                    },
+                    error: function (errRes) {
+                        console.error(errRes)
+                        debugger
+                    }
+                })
+            }
+        })
+
+        $("#endDate").focus((e) => {
+            e.preventDefault()
+            $("#endDate").prop("min", $("#startDate").val())
+        })
+    })
+</script>

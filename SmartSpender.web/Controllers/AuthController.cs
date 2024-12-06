@@ -21,7 +21,7 @@ namespace SmartSpender.web.Controllers
             VMAuth? auth = authStr != null ? JsonConvert.DeserializeObject<VMAuth?>(authStr) : null;
             if (auth != null && auth?.Token != null)
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Dashboard");
             }
 
             return View();

@@ -73,13 +73,6 @@
         <form class="form form-vertical" id="form-login">
             <div class="form-body">
                 <div class="row">
-                    @* <div class="col-12">
-                        <div class="form-group">
-                            <label for="full-name-vertical">Full Name</label>
-                            <input type="text" id="full-name-vertical" class="form-control" name="fname"
-                                placeholder="full Name">
-                        </div>
-                    </div> *@
                     <div class="col-12">
                         <div class="form-group">
                             <label for="Email-vertical">Email<span class="text-danger">*</span></label>
@@ -87,13 +80,6 @@
                                    placeholder="Email">
                         </div>
                     </div>
-                    @* <div class="col-12">
-                        <div class="form-group">
-                            <label for="username-vertical">Username</label>
-                            <input type="text" id="username-vertical" class="form-control" name="contact"
-                                placeholder="Username">
-                        </div>
-                    </div> *@
                     <div class="col-12">
                         <div class="form-group">
                             <div class="d-flex justify-content-between align-items-center">
@@ -109,14 +95,14 @@
                     <div class="col-12">
                         <div class='form-check'>
                             <div class="checkbox">
-                                <input type="checkbox" id="checkbox3" class='form-check-input' checked>
+                                @* <input type="checkbox" id="checkbox3" class='form-check-input' checked> *@
+                                <input type="checkbox" id="checkbox3" class='form-check-input'>
                                 <label for="checkbox3">Remember Me</label>
                             </div>
                         </div>
                     </div>
                     <div class="col-12 d-flex justify-content-end">
                         <button type="submit" class="btn btn-primary me-1 mb-1" id="btn-login">Submit</button>
-                        @* <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button> *@
                     </div>
                 </div>
             </div>
@@ -172,7 +158,6 @@
                     </div>
                     <div class="col-12 d-flex justify-content-end">
                         <button type="submit" class="btn btn-primary me-1 mb-1" id="btn-register">Submit</button>
-                        @* <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button> *@
                     </div>
                 </div>
             </div>
@@ -207,17 +192,17 @@
                     },
                     Password: {
                         required: true,
-                        // minlength: 8
+                        minlength: 8
                     }
                 },
                 messages: {
                     Email: {
-                        required: "Email wajib diisi!",
-                        email: "Format email salah!"
+                        required: "Email is required!",
+                        email: "Please check the email format!"
                     },
                     Password: {
-                        required: "Password wajib diisi!",
-                        // minlength: "Password minimal 8 karakter!"
+                        required: "Password is required!",
+                        minlength: "Minimum characters for password is 8 characters!"
                     }
                 },
                 errorPlacement: function (error, element) {
@@ -240,7 +225,7 @@
                             if (res.statusCode == 200) {
                                 toastr["success"](res.message)
                                 setTimeout(function () {
-                                    location.href = "/"
+                                    location.href = "/dashboard"
                                 }, 1500);
                             } else {
                                 console.log(res.message)
@@ -283,21 +268,21 @@
                 },
                 messages: {
                     Email: {
-                        required: "Email wajib diisi!",
-                        email: "Format email salah!"
+                        required: "Email is required!",
+                        email: "Please check the email format!"
                     },
                     Password: {
-                        required: "Password wajib diisi!",
-                        minlength: "Password minimal 8 karakter!"
+                        required: "Password is required!",
+                        minlength: "Minimum characters for password is 8 characters!"
                     },
                     FullName: {
-                        required: "FullName wajib diisi!",
+                        required: "FullName is required!",
                     },
                     Username: {
-                        required: "Username wajib diisi!",
+                        required: "Username is required!",
                     },
                     confirm_password: {
-                        required: "Konfirmasi password wajib diisi!",
+                        required: "Password confirmation is required!",
                     }
                 },
                 errorPlacement: function (error, element) {
