@@ -15,7 +15,7 @@ namespace SmartSpender.DataAccess
             _db = db;
         }
 
-        public VMResponse<List<VMBudgetPlan>> FetchAllORM(string? filter)
+        public VMResponse<List<VMBudgetPlan>> FetchAllORM(string? filter, Guid userId)
         {
             VMResponse<List<VMBudgetPlan>> response = new();
 
@@ -23,9 +23,9 @@ namespace SmartSpender.DataAccess
             {
                 response.Data = (
                         from bp in _db.BudgetPlans
-                        where !string.IsNullOrEmpty(filter)
+                        where bp.UserId == userId && !string.IsNullOrEmpty(filter)
                             ? bp.PlanName.ToLower().Contains(filter.ToLower())
-                            : true
+                            : true && bp.EndDate >= DateTime.Now
                         orderby bp.CreatedOn descending
                         select new VMBudgetPlan()
                         {
@@ -71,21 +71,27 @@ namespace SmartSpender.DataAccess
             return response;
         }
 
-        public async Task<VMResponse<List<VMBudgetPlan>>> FetchAllRaw(string? filter)
+        public async Task<VMResponse<List<VMBudgetPlan>>> FetchAllRaw(string? filter, Guid userId)
         {
             VMResponse<List<VMBudgetPlan>> response = new();
 
             try
             {
-                string sql = "SELECT * FROM budget_plans ";
+                string sql = "SELECT * FROM budget_plans " +
+                    "WHERE user_id = {0} " +
+                    "AND end_date >= {1} ";
                 if (!string.IsNullOrEmpty(filter))
                 {
-                    sql += "WHERE LOWER(plan_name) LIKE '%{0}%' ";
+                    sql += "AND LOWER(plan_name) LIKE '%{2}%' ";
                 }
                 sql += "ORDER BY created_on DESC";
 
                 List<BudgetPlan> budgetPlans = await _db.BudgetPlans
-                    .FromSqlRaw(sql, filter ?? string.Empty)
+                    .FromSqlRaw(
+                        sql,
+                        userId,
+                        DateTime.Now,
+                        filter ?? string.Empty)
                     .ToListAsync();
 
                 // Native SQL queries

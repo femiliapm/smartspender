@@ -18,13 +18,13 @@ namespace SmartSpender.API.Controllers
             budgetPlan = new(db);
         }
 
-        [HttpGet]
-        public async Task<ActionResult> Fetch(string? filter)
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult> Fetch(string? filter, Guid userId)
         {
             try
             {
                 VMResponse<List<VMBudgetPlan>> response = await Task.Run(() =>
-                    budgetPlan.FetchAllRaw(filter));
+                    budgetPlan.FetchAllRaw(filter, userId));
                 return StatusCode((int)response.StatusCode, response);
             }
             catch (Exception ex)
