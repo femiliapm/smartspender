@@ -16,6 +16,13 @@ namespace SmartSpender.web.Controllers
 
         public IActionResult Index()
         {
+            string? authStr = HttpContext.Session.GetString("auth");
+            VMAuth? auth = authStr != null ? JsonConvert.DeserializeObject<VMAuth?>(authStr) : null;
+            if (auth == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             return View();
         }
 

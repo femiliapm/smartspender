@@ -28,7 +28,7 @@ namespace SmartSpender.web.Models
                 jsonData = JsonConvert.SerializeObject(req);
                 content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-                string url = apiUrl + "Category";
+                string url = apiUrl + "Category/user/" + req.ModifiedBy;
                 Console.WriteLine(url);
 
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -60,6 +60,50 @@ namespace SmartSpender.web.Models
             catch (Exception ex)
             {
                 Console.WriteLine($"Error at CategoryModel.Create: {ex.Message}");
+                throw;
+            }
+
+            return response;
+        }
+
+        public async Task<VMResponse<List<VMCategory>>?> Fetch(string token, Guid? userId)
+        {
+            VMResponse<List<VMCategory>>? response = new();
+
+            try
+            {
+                string url = apiUrl + "Category/user/" + userId;
+                Console.WriteLine(url);
+
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                HttpResponseMessage responseMessage = await httpClient.GetAsync(url);
+                if (!responseMessage.IsSuccessStatusCode)
+                {
+                    string errorContent = await responseMessage.Content.ReadAsStringAsync();
+                    response = JsonConvert.DeserializeObject<VMResponse<List<VMCategory>>>(errorContent);
+
+                    if (response != null && !string.IsNullOrEmpty(response.Message)) return response;
+
+                    Console.WriteLine($"Error: {responseMessage.StatusCode}, Content: {errorContent}");
+                    throw new Exception($"{errorContent}");
+                }
+                string responseString = await responseMessage.Content.ReadAsStringAsync();
+                response = JsonConvert.DeserializeObject<VMResponse<List<VMCategory>>>(responseString);
+
+                if (response == null)
+                {
+                    throw new Exception("Category API cannot be reached!");
+                }
+
+                if (response != null && response.StatusCode != HttpStatusCode.OK)
+                {
+                    throw new Exception(response.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error at CategoryModel.Fetch: {ex.Message}");
                 throw;
             }
 

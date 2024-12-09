@@ -24,7 +24,34 @@ namespace SmartSpender.API.Controllers
             try
             {
                 //VMResponse<List<VMCategory>> response = await Task.Run(() => category.FetchAllORM());
-                VMResponse<List<VMCategory>> response = await Task.Run(() => category.FetchAllRaw());
+                VMResponse<List<VMCategory>> response = await Task.Run(() => category.FetchAllRaw(null));
+                return StatusCode((int)response.StatusCode, response);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error at CategoryController.FetchAll: " + ex.Message);
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine("InnerException: " + ex.InnerException.Message);
+                }
+
+                VMError err = new()
+                {
+                    error = ex.Message,
+                    error_description = ex.Source
+                };
+
+                return StatusCode(500, err);
+            }
+        }
+
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult> FetchAll(Guid userId)
+        {
+            try
+            {
+                //VMResponse<List<VMCategory>> response = await Task.Run(() => category.FetchAllORM());
+                VMResponse<List<VMCategory>> response = await Task.Run(() => category.FetchAllRaw(userId));
                 return StatusCode((int)response.StatusCode, response);
             }
             catch (Exception ex)
@@ -77,7 +104,34 @@ namespace SmartSpender.API.Controllers
             try
             {
                 //VMResponse<VMCategory> response = await Task.Run(() => category.CreateORM(req));
-                VMResponse<VMCategory> response = await Task.Run(() => category.CreateRaw(req));
+                VMResponse<VMCategory> response = await Task.Run(() => category.CreateRaw(req, null));
+                return StatusCode((int)response.StatusCode, response);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error at CategoryController.Create: " + ex.Message);
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine("InnerException: " + ex.InnerException.Message);
+                }
+
+                VMError err = new()
+                {
+                    error = ex.Message,
+                    error_description = ex.Source
+                };
+
+                return StatusCode(500, err);
+            }
+        }
+
+        [HttpPost("user/{userId}")]
+        public async Task<ActionResult> Create(VMCategoryReq req, Guid userId)
+        {
+            try
+            {
+                //VMResponse<VMCategory> response = await Task.Run(() => category.CreateORM(req));
+                VMResponse<VMCategory> response = await Task.Run(() => category.CreateRaw(req, userId));
                 return StatusCode((int)response.StatusCode, response);
             }
             catch (Exception ex)

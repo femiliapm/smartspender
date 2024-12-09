@@ -105,13 +105,17 @@
             @if (Model != null)
             {
                 int max = Model.Count;
-                @* int no = Model.f *@
+                int no = ViewBag.FirstIdx;
                 @for (int i = 0; i < max; i++)
                 {
                     <tr>
-                        <td>i</td>
+                        <td>@no.</td>
                         <td>@Model[i].CategoryName</td>
-                        <td>@Model[i].Type</td>
+                        <td>
+                            <span class="badge @(Model[i].Type == "Income" ? "bg-success" : "bg-danger")">
+                                @Model[i].Type
+                            </span>
+                        </td>
                         <td>@Model[i].Description</td>
                         <td>
                             <button class="btn btn-warning" data-id="@Model[i].Id" data-bs-toggle="modal"
@@ -124,6 +128,7 @@
                             </button>
                         </td>
                     </tr>
+                    no += 1;
                 }
             }
             else
@@ -153,6 +158,10 @@
 
 @section Scripts {
     <script>
+        function RefreshPage(filter, currentPageSize, pageNumber) {
+            location.href = `/category?filter=${filter}&currentPageSize=${currentPageSize}&pageNumber=${pageNumber}`
+        }
+
         $(document).ready(() => {
             $(".button-add").click((e) => {
                 e.preventDefault()

@@ -33,6 +33,7 @@ namespace SmartSpender.DataAccess
                             Id = c.Id,
                             ModifiedBy = c.ModifiedBy,
                             ModifiedOn = c.ModifiedOn,
+                            Type = c.Type,
                         }
                     ).ToList();
 
@@ -47,15 +48,20 @@ namespace SmartSpender.DataAccess
             return response;
         }
 
-        public async Task<VMResponse<List<VMCategory>>> FetchAllRaw()
+        public async Task<VMResponse<List<VMCategory>>> FetchAllRaw(Guid? userId)
         {
             VMResponse<List<VMCategory>> response = new();
 
             try
             {
-                string sql = "SELECT * FROM categories " +
-                    "ORDER BY created_on DESC";
-                List<Category> dataDM = await _db.Categories.FromSqlRaw(sql).ToListAsync();
+                string sql = "SELECT * FROM categories ";
+                if (userId != null)
+                {
+                    sql += "WHERE created_by = {0} ";
+                }
+                sql += "ORDER BY created_on DESC";
+
+                List<Category> dataDM = await _db.Categories.FromSqlRaw(sql, userId!).ToListAsync();
 
                 // mapping from DM to VM
                 response.Data = new();
@@ -70,6 +76,7 @@ namespace SmartSpender.DataAccess
                         Id = data.Id,
                         ModifiedBy = data.ModifiedBy,
                         ModifiedOn = data.ModifiedOn,
+                        Type = data.Type,
                     });
                 }
 
@@ -218,7 +225,7 @@ namespace SmartSpender.DataAccess
             return response;
         }
 
-        public async Task<VMResponse<VMCategory>> CreateRaw(VMCategoryReq req)
+        public async Task<VMResponse<VMCategory>> CreateRaw(VMCategoryReq req, Guid? userId)
         {
             VMResponse<VMCategory> response = new();
 
@@ -227,10 +234,16 @@ namespace SmartSpender.DataAccess
                 try
                 {
                     string sqlFind = "SELECT * FROM categories " +
-                        "WHERE TRIM(LOWER(category_name)) = TRIM(LOWER({0}))";
+                        "WHERE TRIM(LOWER(category_name)) = TRIM(LOWER({0})) ";
+                    if (userId != null)
+                    {
+                        sqlFind += "AND created_by = {1}";
+                    }
+
                     Category? category = await _db.Categories.FromSqlRaw(
                         sqlFind,
-                        req.CategoryName).FirstOrDefaultAsync();
+                        req.CategoryName,
+                        userId!).FirstOrDefaultAsync();
 
                     //jika category ada isinya / tidak null
                     if (category != null)
