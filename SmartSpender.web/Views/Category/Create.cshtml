@@ -1,0 +1,121 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = null;
+}
+
+<form class="form form-vertical" id="categoryForm">
+    <div class="form-body">
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label for="CategoryName">Category Name<span class="text-danger">*</span></label>
+                    <input type="text" id="CategoryName" class="form-control"
+                           name="CategoryName" placeholder="Category Name">
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="row my-3">
+                    <div class="col">
+                        <label for="Type">Type<span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="Type" id="Expense" value="Expense" checked>
+                            <label class="form-check-label" for="Expense">
+                                Expense
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="Type" id="Income" value="Income">
+                            <label class="form-check-label" for="Income">
+                                Income
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group mb-3">
+                    <label for="Description" class="form-label">Description</label>
+                    <textarea class="form-control" id="Description" rows="3" name="Description"></textarea>
+                </div>
+            </div>
+            <div class="col-12 d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary me-1 mb-1" id="btnSave">Submit</button>
+                <button data-bs-dismiss="modal"
+                        class="btn btn-light-secondary me-1 mb-1">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    $.validator.addMethod("noSpace", function (value, element) {
+        return value.trim().length > 0
+    }, "Input tidak boleh kosong atau hanya diisi dengan spasi!")
+
+    $(document).ready(() => {
+        $("#staticModalLabel").text("@ViewBag.Title")
+
+        $("#categoryForm").validate({
+            rules: {
+                CategoryName: {
+                    required: true,
+                    noSpace: true
+                },
+                Type: "required"
+            },
+            messages: {
+                CategoryName: {
+                    required: "Category name is required!"
+                },
+                Type: {
+                    required: "Type is required!"
+                },
+            },
+            errorPlacement: function (error, element) {
+                error.addClass("text-danger")
+                if (element.attr("name") == "Type") {
+                    error.appendTo("#type-error"); // Tempat error di gender-error div
+                } else {
+                    error.insertAfter(element);
+                }
+            }
+        })
+
+        $("#btnSave").click((e) => {
+            e.preventDefault()
+
+            if ($("#categoryForm").valid()) {
+                $.ajax({
+                    url: "/Category/AddCategory",
+                    type: "post",
+                    data: $("#categoryForm").serialize(),
+                    dataType: "json",
+                    beforeSend: () => { },
+                    success: function (res) {
+                        if (res.statusCode == 200 || res.statusCode == 201) {
+                            $("#staticModal").modal("hide")
+                            toastr.success(res.message)
+                            setTimeout(function () {
+                                location.reload();
+                            }, 1500);
+                        } else {
+                            toastr.error(res.message)
+                        }
+                    },
+                    error: function (errRes) {
+                        console.error(errRes)
+                        debugger
+                    }
+                })
+            }
+        })
+    })
+</script>
