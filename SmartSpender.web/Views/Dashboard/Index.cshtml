@@ -6,18 +6,18 @@
     decimal totalIncome = 0;
     decimal totalExpense = 0;
 
-    // foreach (var trans in ViewBag.Transactions)
-    // {
-    //     totalBalance += trans.Amount;
-    //     if (trans.Type == "Income")
-    //     {
-    //         totalIncome += trans.Amount;
-    //     }
-    //     else if (trans.Type == "Expense")
-    //     {
-    //         totalExpense += trans.Amount;
-    //     }
-    // }
+    foreach (var trans in ViewBag.Transactions)
+    {
+        totalBalance += trans.Amount;
+        if (trans.Type == "Income")
+        {
+            totalIncome += trans.Amount;
+        }
+        else if (trans.Type == "Expense")
+        {
+            totalExpense += trans.Amount;
+        }
+    }
 
     List<decimal> percentages = new();
     List<string> labels = new();
@@ -359,7 +359,7 @@
             $(".button-add").click((e) => {
                 e.preventDefault()
                 $("#staticModalBody").html(spinner)
-                // $("#staticModalBody").load("/Transaction/Create")
+                $("#staticModalBody").load("/Transaction/Create")
             })
 
             $("#btnAddBudget").click((e) => {

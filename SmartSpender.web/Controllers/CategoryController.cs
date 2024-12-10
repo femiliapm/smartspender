@@ -53,6 +53,13 @@ namespace SmartSpender.web.Controllers
 
         public IActionResult Create()
         {
+            string? authStr = HttpContext.Session.GetString("auth");
+            VMAuth? auth = authStr != null ? JsonConvert.DeserializeObject<VMAuth?>(authStr) : null;
+            if (auth == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             ViewBag.Title = "Add Category";
             return View();
         }

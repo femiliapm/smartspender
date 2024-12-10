@@ -8,10 +8,12 @@ namespace SmartSpender.web.Controllers
     public class DashboardController : Controller
     {
         private readonly BudgetPlanModel budgetPlan;
+        private readonly TransactionModel transaction;
 
         public DashboardController(IConfiguration _config)
         {
             budgetPlan = new(_config);
+            transaction = new(_config);
         }
 
         public async Task<IActionResult> Index()
@@ -24,8 +26,10 @@ namespace SmartSpender.web.Controllers
             }
 
             VMResponse<List<VMBudgetPlan>>? resBudget = await budgetPlan.Fetch(auth.Token ?? string.Empty, string.Empty, auth.Id);
+            VMResponse<List<VMTransaction>>? resTrans = await transaction.FetchAll(auth.Token ?? string.Empty, string.Empty, auth.Id);
 
             ViewBag.Budgets = resBudget?.Data;
+            ViewBag.Transactions = resTrans?.Data;
 
             return View();
         }

@@ -49,7 +49,33 @@ namespace SmartSpender.API.Controllers
         {
             try
             {
-                VMResponse<List<VMTransaction>> response = await Task.Run(() => transaction.FetchRaw(filter));
+                VMResponse<List<VMTransaction>> response = await Task.Run(() => transaction.FetchRaw(filter, null));
+                return StatusCode((int)response.StatusCode, response);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error at TransactionController.Fetch: " + ex.Message);
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine("InnerException: " + ex.InnerException.Message);
+                }
+
+                VMError err = new()
+                {
+                    error = ex.Message,
+                    error_description = ex.Source
+                };
+
+                return StatusCode(500, err);
+            }
+        }
+
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult> Fetch(string? filter, Guid? userId)
+        {
+            try
+            {
+                VMResponse<List<VMTransaction>> response = await Task.Run(() => transaction.FetchRaw(filter, userId));
                 return StatusCode((int)response.StatusCode, response);
             }
             catch (Exception ex)

@@ -192,7 +192,11 @@ namespace SmartSpender.DataAccess
 
                                 var result = await _db.Database
                                     .ExecuteSqlRawAsync("INSERT INTO income_tags (created_by, created_on, income_id, tag_id) " +
-                                    "VALUES ({0}, {1}, {2}, {3})");
+                                    "VALUES ({0}, {1}, {2}, {3})",
+                                    req.ModifiedBy!,
+                                    income!.CreatedOn!,
+                                    income.Id,
+                                    tag!.Id);
                             }
                         }
 
@@ -238,7 +242,11 @@ namespace SmartSpender.DataAccess
 
                                 var result = await _db.Database
                                     .ExecuteSqlRawAsync("INSERT INTO expense_tags (created_by, created_on, expense_id, tag_id) " +
-                                    "VALUES ({0}, {1}, {2}, {3})");
+                                    "VALUES ({0}, {1}, {2}, {3})",
+                                    req.ModifiedBy!,
+                                    expense!.CreatedOn!,
+                                    expense.Id,
+                                    tag!.Id);
                             }
                         }
                     }
@@ -336,7 +344,7 @@ namespace SmartSpender.DataAccess
         }
 
         // TO BE COMPLETED
-        public VMResponse<List<VMTransaction>> FetchRaw(string? filter)
+        public VMResponse<List<VMTransaction>> FetchRaw(string? filter, Guid? userId)
         {
             VMResponse<List<VMTransaction>> response = new();
 
@@ -346,6 +354,7 @@ namespace SmartSpender.DataAccess
                         from i in _db.Incomes
                         join bp in _db.BudgetPlans on i.BudgetPlanId equals bp.Id
                         join c in _db.Categories on i.CategoryId equals c.Id
+                        where i.CreatedBy == userId
                         select new VMTransaction()
                         {
                             Amount = i.Amount,
@@ -368,6 +377,7 @@ namespace SmartSpender.DataAccess
                         from e in _db.Expenses
                         join bp in _db.BudgetPlans on e.BudgetPlanId equals bp.Id
                         join c in _db.Categories on e.CategoryId equals c.Id
+                        where e.CreatedBy == userId
                         select new VMTransaction()
                         {
                             Amount = e.Amount,
