@@ -27,9 +27,11 @@ namespace SmartSpender.web.Controllers
 
             VMResponse<List<VMBudgetPlan>>? resBudget = await budgetPlan.Fetch(auth.Token ?? string.Empty, string.Empty, auth.Id);
             VMResponse<List<VMTransaction>>? resTrans = await transaction.FetchAll(auth.Token ?? string.Empty, string.Empty, auth.Id);
+            VMResponse<List<VMTransactionCategory>>? resTransCat = await transaction.FetchByCategory(auth.Token ?? string.Empty);
 
             ViewBag.Budgets = resBudget?.Data;
             ViewBag.Transactions = resTrans?.Data;
+            ViewBag.ChartSpending = resTransCat?.Data;
 
             return View();
         }

@@ -109,5 +109,49 @@ namespace SmartSpender.web.Models
 
             return response;
         }
+
+        public async Task<VMResponse<List<VMTransactionCategory>>?> FetchByCategory(string token)
+        {
+            VMResponse<List<VMTransactionCategory>>? response = new();
+
+            try
+            {
+                string url = apiUrl + "Transaction/Category?by=expense";
+                Console.WriteLine(url);
+
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                HttpResponseMessage responseMessage = await httpClient.GetAsync(url);
+                if (!responseMessage.IsSuccessStatusCode)
+                {
+                    string errorContent = await responseMessage.Content.ReadAsStringAsync();
+                    response = JsonConvert.DeserializeObject<VMResponse<List<VMTransactionCategory>>>(errorContent);
+
+                    if (response != null && !string.IsNullOrEmpty(response.Message)) return response;
+
+                    Console.WriteLine($"Error: {responseMessage.StatusCode}, Content: {errorContent}");
+                    throw new Exception($"{errorContent}");
+                }
+                string responseString = await responseMessage.Content.ReadAsStringAsync();
+                response = JsonConvert.DeserializeObject<VMResponse<List<VMTransactionCategory>>>(responseString);
+
+                if (response == null)
+                {
+                    throw new Exception("Transaction API cannot be reached!");
+                }
+
+                if (response != null && response.StatusCode != HttpStatusCode.OK)
+                {
+                    throw new Exception(response.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error at TransactionModel.FetchByCategory: {ex.Message}");
+                throw;
+            }
+
+            return response;
+        }
     }
 }

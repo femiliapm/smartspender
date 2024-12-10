@@ -21,11 +21,11 @@
 
     List<decimal> percentages = new();
     List<string> labels = new();
-    // foreach (var charts in ViewBag.ChartSpending)
-    // {
-    //     percentages.Add(Math.Round(charts.Amount * 100 / charts.TotalAmount, 2));
-    //     labels.Add(charts.Category);
-    // }
+    foreach (var charts in ViewBag.ChartSpending)
+    {
+        percentages.Add(Math.Round(charts.Amount * 100 / charts.TotalAmount, 2));
+        labels.Add(charts.Category);
+    }
 }
 
 <style>
