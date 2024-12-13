@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SmartSpender.ViewModel;
 
 namespace SmartSpender.DataModel
 {
-    public partial class SmartSpenderContext : DbContext
+    public partial class SmartSpenderContext : IdentityDbContext<User>
     {
         public SmartSpenderContext()
         {
