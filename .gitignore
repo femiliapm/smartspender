@@ -1,3 +1,7 @@
+# Ignore all appsettings.json files in all sub-projects
+**/appsettings.json
+**/appsettings.Development.json
+
 # File created using '.gitignore Generator' for Visual Studio Code: https://bit.ly/vscode-gig
 # Created by https://www.toptal.com/developers/gitignore/api/windows,visualstudiocode,aspnetcore,dotnetcore
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,visualstudiocode,aspnetcore,dotnetcore
